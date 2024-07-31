@@ -118,7 +118,7 @@ const Donations: React.FC = () => {
                 <TableRow key={donation.id}>
                   <TableCell>{donation.donor}</TableCell>
                   <TableCell>{donation.date}</TableCell>
-                  <TableCell>${donation.amount}</TableCell>
+                  <TableCell>PKR {donation.amount}</TableCell>
                   <TableCell>{donation.type}</TableCell>
                   <TableCell>{donation.project || '-'}</TableCell>
                   <TableCell>

@@ -98,7 +98,7 @@ const Expenses: React.FC = () => {
                 <TableRow key={expense.id}>
                   <TableCell>{expense.date}</TableCell>
                   <TableCell>{expense.category}</TableCell>
-                  <TableCell>${expense.amount.toLocaleString()}</TableCell>
+                  <TableCell>PKR {expense.amount.toLocaleString()}</TableCell>
                   <TableCell>{expense.notes}</TableCell>
                   <TableCell>
                     {expense.receiptFile ? (

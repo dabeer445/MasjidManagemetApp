@@ -3,12 +3,6 @@ import { Card, CardHeader, CardBody, CardFooter, Divider, Table, TableHeader, Ta
 import { getLocalStorage, setLocalStorage } from '../utils/localStorage';
 import { Donor, Donation } from '../types';
 
-const initialDonors: Donor[] = [
-  { id: 1, name: "John Doe", number: "123-456-7890", address: "123 Main St, City, Country" },
-  { id: 2, name: "Jane Smith", number: "098-765-4321", address: "456 Oak Ave, Town, Country" },
-  { id: 3, name: "Ahmed Ali", number: "111-222-3333", address: "789 Pine Rd, Village, Country" },
-];
-
 const Donors: React.FC = () => {
   const [donors, setDonors] = useState<Donor[]>([]);
   const [newDonor, setNewDonor] = useState<Omit<Donor, 'id'>>({ name: '', number: '', address: '' });
@@ -18,7 +12,7 @@ const Donors: React.FC = () => {
   const [editingDonor, setEditingDonor] = useState<Donor | null>(null);
 
   useEffect(() => {
-    const storedDonors = getLocalStorage<Donor[]>('donors', initialDonors);
+    const storedDonors = getLocalStorage<Donor[]>('donors', []);
     setDonors(storedDonors);
   }, []);
 
@@ -167,7 +161,7 @@ const Donors: React.FC = () => {
                 {donorDonations.map((donation, index) => (
                   <TableRow key={index}>
                     <TableCell>{donation.date}</TableCell>
-                    <TableCell>${donation.amount}</TableCell>
+                    <TableCell>PKR {donation.amount}</TableCell>
                     <TableCell>{donation.type}</TableCell>
                     <TableCell>{donation.project || '-'}</TableCell>
                   </TableRow>

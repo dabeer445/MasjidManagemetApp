@@ -75,7 +75,7 @@ const Projects: React.FC = () => {
                 {projects.map((project) => (
                   <TableRow key={project.id}>
                     <TableCell>{project.name}</TableCell>
-                    <TableCell>${project.budget.toLocaleString()}</TableCell>
+                    <TableCell>PKR {project.budget.toLocaleString()}</TableCell>
                     <TableCell>
                       <Chip color={project.status === "Running" ? "success" : "primary"}>
                         {project.status}
@@ -144,7 +144,7 @@ const Projects: React.FC = () => {
           <Divider />
           <CardBody>
             <div className="mb-4">
-              <p><strong>Budget:</strong> ${selectedProject.budget.toLocaleString()}</p>
+              <p><strong>Budget:</strong> PKR {selectedProject.budget.toLocaleString()}</p>
               <p><strong>Start Date:</strong> {selectedProject.startDate}</p>
               <p><strong>End Date:</strong> {selectedProject.endDate}</p>
               <p><strong>Status:</strong> {selectedProject.status}</p>
@@ -166,7 +166,7 @@ const Projects: React.FC = () => {
                         <TableRow key={index}>
                           <TableCell>{donation.donor}</TableCell>
                           <TableCell>{donation.date}</TableCell>
-                          <TableCell>${donation.amount}</TableCell>
+                          <TableCell>PKR {donation.amount}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -189,7 +189,7 @@ const Projects: React.FC = () => {
                       {projectExpenses.map((expense, index) => (
                         <TableRow key={index}>
                           <TableCell>{expense.date}</TableCell>
-                          <TableCell>${expense.amount}</TableCell>
+                          <TableCell>PKR {expense.amount}</TableCell>
                           <TableCell>{expense.notes}</TableCell>
                           <TableCell>
                             {expense.receiptFile ? (

@@ -49,7 +49,7 @@ export default function Dashboard() {
                 <DollarSign className="w-4 h-4 text-default-400" />
               </div>
               <div className="flex flex-col mt-2">
-                <span className="text-2xl font-semibold">${totalDonations.toLocaleString()}</span>
+                <span className="text-2xl font-semibold">PKR {totalDonations.toLocaleString()}</span>
                 <span className="text-xs text-default-400">+20.1% from last year</span>
               </div>
             </CardBody>
@@ -61,7 +61,7 @@ export default function Dashboard() {
                 <Users className="w-4 h-4 text-default-400" />
               </div>
               <div className="flex flex-col mt-2">
-                <span className="text-2xl font-semibold">+$50,350</span>
+                <span className="text-2xl font-semibold">+PKR 50,350</span>
                 <span className="text-xs text-default-400">+180.1% from last year</span>
               </div>
             </CardBody>
@@ -73,7 +73,7 @@ export default function Dashboard() {
                 <CreditCard className="w-4 h-4 text-default-400" />
               </div>
               <div className="flex flex-col mt-2">
-                <span className="text-2xl font-semibold">${totalExpenses.toLocaleString()}</span>
+                <span className="text-2xl font-semibold">PKR {totalExpenses.toLocaleString()}</span>
                 <span className="text-xs text-default-400">+19% from last year</span>
               </div>
             </CardBody>
@@ -85,8 +85,8 @@ export default function Dashboard() {
                 <Activity className="w-4 h-4 text-default-400" />
               </div>
               <div className="flex flex-col mt-2">
-                <span className="text-2xl font-semibold">${totalBudget.toLocaleString()}</span>
-                <span className="text-xs text-default-400">Remaining: $87,766</span>
+                <span className="text-2xl font-semibold">PKR {totalBudget.toLocaleString()}</span>
+                <span className="text-xs text-default-400">Remaining: PKR 87,766</span>
               </div>
             </CardBody>
           </Card>
@@ -111,7 +111,7 @@ export default function Dashboard() {
                     <TableRow key={donation.id}>
                       <TableCell>{donation.donor}</TableCell>
                       <TableCell>{donation.date}</TableCell>
-                      <TableCell>${donation.amount}</TableCell>
+                      <TableCell>PKR {donation.amount}</TableCell>
                       <TableCell>{donation.type}</TableCell>
                       <TableCell>{donation.project || '-'}</TableCell>
                     </TableRow>
@@ -139,11 +139,11 @@ export default function Dashboard() {
                     <TableRow key={expense.id}>
                       <TableCell>{expense.date}</TableCell>
                       <TableCell>{expense.category}</TableCell>
-                      <TableCell>${expense.amount.toLocaleString()}</TableCell>
+                      <TableCell>PKR {expense.amount.toLocaleString()}</TableCell>
                       <TableCell>{expense.notes}</TableCell>
                       <TableCell>
                         {expense.receiptFile ? (
-                          <Button size="sm" onPress={() => console.log(`View receipt: ${expense.receiptFile}`)}>
+                          <Button size="sm" onPress={() => console.log(`View receipt: PKR {expense.receiptFile}`)}>
                             View Receipt
                           </Button>
                         ) : (
@@ -172,7 +172,7 @@ export default function Dashboard() {
                   {projects.map((project) => (
                     <TableRow key={project.id}>
                       <TableCell>{project.name}</TableCell>
-                      <TableCell>${project.budget.toLocaleString()}</TableCell>
+                      <TableCell>PKR {project.budget.toLocaleString()}</TableCell>
                       <TableCell>
                         <Chip color={project.status === "Running" ? "success" : "primary"}>
                           {project.status}
