@@ -1,7 +1,9 @@
-import { Card, CardBody, CardHeader, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button, Input, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Chip, Divider } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Chip, Divider } from "@nextui-org/react";
 import { Activity, CreditCard, DollarSign, Users, Calendar } from 'lucide-react';
 import { useState, useEffect } from "react";
-import { Donation, Project, Expense, Donor, StaffMember } from "../types";
+import { Donation, Project, Expense, 
+  // Donor, StaffMember
+ } from "../types";
 import { getLocalStorage } from "../utils/localStorage";
 
 export default function Dashboard() {
@@ -11,25 +13,25 @@ export default function Dashboard() {
   const [totalExpenses, setTotalExpenses] = useState<Number>(0);
   const [totalBudget, setTotalBudget] = useState<Number>(0);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [donors, setDonors] = useState<Donor[]>([]);
-  const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
+  // const [donors, setDonors] = useState<Donor[]>([]);
+  // const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
 
   useEffect(() => {
-    const storedDonors = getLocalStorage<Donor[]>('donors', []);
+    // const storedDonors = getLocalStorage<Donor[]>('donors', []);
+    // const storedStaffMembers = getLocalStorage<StaffMember[]>('staffMembers', []);
     const storedDonations = getLocalStorage<Donation[]>('donations', []);
     const storedProjects = getLocalStorage<Project[]>('projects', []);
     const storedExpenses = getLocalStorage<Expense[]>('expenses', []);
-    const storedStaffMembers = getLocalStorage<StaffMember[]>('staffMembers', []);
     
     const totalDonations =  storedDonations.reduce((acc, donation) => acc + donation.amount, 0);
     const totalExpenses = storedExpenses.reduce((acc, expense) => acc + expense.amount, 0);
     const totalBudget = storedProjects.reduce((acc, project) => acc + project.budget, 0);
 
+    // setStaffMembers(storedStaffMembers);
+    // setDonors(storedDonors);
     setExpenses(storedExpenses);
-    setDonors(storedDonors);
     setDonations(storedDonations);
     setProjects(storedProjects);
-    setStaffMembers(storedStaffMembers);
     setTotalDonations(totalDonations);
     setTotalExpenses(totalExpenses);
     setTotalBudget(totalBudget);
