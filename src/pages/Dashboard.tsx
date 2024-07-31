@@ -1,7 +1,40 @@
-import { Card, CardBody, CardHeader, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button, Input, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button, Input, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Chip, Divider } from "@nextui-org/react";
 import { Activity, CreditCard, DollarSign, Users, Calendar } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { Donation, Project, Expense, Donor, StaffMember } from "../types";
+import { getLocalStorage } from "../utils/localStorage";
 
 export default function Dashboard() {
+  const [donations, setDonations] = useState<Donation[]>([]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [totalDonations, setTotalDonations] = useState<Number>(0);
+  const [totalExpenses, setTotalExpenses] = useState<Number>(0);
+  const [totalBudget, setTotalBudget] = useState<Number>(0);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [donors, setDonors] = useState<Donor[]>([]);
+  const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
+
+  useEffect(() => {
+    const storedDonors = getLocalStorage<Donor[]>('donors', []);
+    const storedDonations = getLocalStorage<Donation[]>('donations', []);
+    const storedProjects = getLocalStorage<Project[]>('projects', []);
+    const storedExpenses = getLocalStorage<Expense[]>('expenses', []);
+    const storedStaffMembers = getLocalStorage<StaffMember[]>('staffMembers', []);
+    
+    const totalDonations =  storedDonations.reduce((acc, donation) => acc + donation.amount, 0);
+    const totalExpenses = storedExpenses.reduce((acc, expense) => acc + expense.amount, 0);
+    const totalBudget = storedProjects.reduce((acc, project) => acc + project.budget, 0);
+
+    setExpenses(storedExpenses);
+    setDonors(storedDonors);
+    setDonations(storedDonations);
+    setProjects(storedProjects);
+    setStaffMembers(storedStaffMembers);
+    setTotalDonations(totalDonations);
+    setTotalExpenses(totalExpenses);
+    setTotalBudget(totalBudget);
+  }, []);
+
   return (
     <div className="flex flex-col w-full min-h-screen bg-background">
       <main className="flex min-h-[calc(100vh_-_64px)] flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
@@ -13,7 +46,7 @@ export default function Dashboard() {
                 <DollarSign className="w-4 h-4 text-default-400" />
               </div>
               <div className="flex flex-col mt-2">
-                <span className="text-2xl font-semibold">$145,231.89</span>
+                <span className="text-2xl font-semibold">${totalDonations.toLocaleString()}</span>
                 <span className="text-xs text-default-400">+20.1% from last year</span>
               </div>
             </CardBody>
@@ -37,7 +70,7 @@ export default function Dashboard() {
                 <CreditCard className="w-4 h-4 text-default-400" />
               </div>
               <div className="flex flex-col mt-2">
-                <span className="text-2xl font-semibold">$112,234</span>
+                <span className="text-2xl font-semibold">${totalExpenses.toLocaleString()}</span>
                 <span className="text-xs text-default-400">+19% from last year</span>
               </div>
             </CardBody>
@@ -49,7 +82,7 @@ export default function Dashboard() {
                 <Activity className="w-4 h-4 text-default-400" />
               </div>
               <div className="flex flex-col mt-2">
-                <span className="text-2xl font-semibold">$200,000</span>
+                <span className="text-2xl font-semibold">${totalBudget.toLocaleString()}</span>
                 <span className="text-xs text-default-400">Remaining: $87,766</span>
               </div>
             </CardBody>
@@ -58,9 +91,9 @@ export default function Dashboard() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <Card>
             <CardHeader>
-              <h4 className="text-large font-bold">Donation Tracking</h4>
-              <p className="text-small text-default-500">View and manage all donations to the masjid.</p>
+              <h4 className="text-lg font-semibold">Donation Tracking</h4>
             </CardHeader>
+            <Divider />
             <CardBody>
               <Table aria-label="Donation tracking table">
                 <TableHeader>
@@ -68,100 +101,86 @@ export default function Dashboard() {
                   <TableColumn>Date</TableColumn>
                   <TableColumn>Amount</TableColumn>
                   <TableColumn>Type</TableColumn>
+                  <TableColumn>Project</TableColumn>
                 </TableHeader>
                 <TableBody>
-                  <TableRow key="1">
-                    <TableCell>John Doe</TableCell>
-                    <TableCell>2023-06-01</TableCell>
-                    <TableCell>$500</TableCell>
-                    <TableCell>Zakat</TableCell>
-                  </TableRow>
-                  <TableRow key="2">
-                    <TableCell>Jane Smith</TableCell>
-                    <TableCell>2023-05-15</TableCell>
-                    <TableCell>$250</TableCell>
-                    <TableCell>Sadaqah</TableCell>
-                  </TableRow>
-                  <TableRow key="3">
-                    <TableCell>Ali Khan</TableCell>
-                    <TableCell>2023-04-30</TableCell>
-                    <TableCell>$1,000</TableCell>
-                    <TableCell>General</TableCell>
-                  </TableRow>
-                  <TableRow key="4">
-                    <TableCell>Fatima Rahman</TableCell>
-                    <TableCell>2023-03-20</TableCell>
-                    <TableCell>$750</TableCell>
-                    <TableCell>Specific Project</TableCell>
-                  </TableRow>
-                  <TableRow key="5">
-                    <TableCell>Omar Malik</TableCell>
-                    <TableCell>2023-02-10</TableCell>
-                    <TableCell>$300</TableCell>
-                    <TableCell>Zakat</TableCell>
-                  </TableRow>
+                  {donations.map((donation) => (
+                    <TableRow key={donation.id}>
+                      <TableCell>{donation.donor}</TableCell>
+                      <TableCell>{donation.date}</TableCell>
+                      <TableCell>${donation.amount}</TableCell>
+                      <TableCell>{donation.type}</TableCell>
+                      <TableCell>{donation.project || '-'}</TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </CardBody>
-          </Card>
-          <Card>
+          </Card>          <Card>
             <CardHeader>
-              <h4 className="text-large font-bold">Expense Tracking</h4>
-              <p className="text-small text-default-500">View and manage all expenses for the masjid.</p>
+              <h4 className="text-lg font-semibold">Expense Tracking</h4>
             </CardHeader>
+            <Divider />
             <CardBody>
               <Table aria-label="Expense tracking table">
                 <TableHeader>
                   <TableColumn>Date</TableColumn>
                   <TableColumn>Category</TableColumn>
                   <TableColumn>Amount</TableColumn>
+                  <TableColumn>Notes</TableColumn>
                   <TableColumn>Receipt</TableColumn>
                 </TableHeader>
                 <TableBody>
-                  <TableRow key="1">
-                    <TableCell>2023-06-01</TableCell>
-                    <TableCell>Utilities</TableCell>
-                    <TableCell>$500</TableCell>
-                    <TableCell>
-                      <Button size="sm">View</Button>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow key="2">
-                    <TableCell>2023-05-15</TableCell>
-                    <TableCell>Maintenance</TableCell>
-                    <TableCell>$1,250</TableCell>
-                    <TableCell>
-                      <Button size="sm">View</Button>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow key="3">
-                    <TableCell>2023-04-30</TableCell>
-                    <TableCell>Supplies</TableCell>
-                    <TableCell>$300</TableCell>
-                    <TableCell>
-                      <Button size="sm">View</Button>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow key="4">
-                    <TableCell>2023-03-20</TableCell>
-                    <TableCell>Events</TableCell>
-                    <TableCell>$750</TableCell>
-                    <TableCell>
-                      <Button size="sm">View</Button>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow key="5">
-                    <TableCell>2023-02-10</TableCell>
-                    <TableCell>Salaries</TableCell>
-                    <TableCell>$5,000</TableCell>
-                    <TableCell>
-                      <Button size="sm">View</Button>
-                    </TableCell>
-                  </TableRow>
+                  {expenses.map((expense) => (
+                    <TableRow key={expense.id}>
+                      <TableCell>{expense.date}</TableCell>
+                      <TableCell>{expense.category}</TableCell>
+                      <TableCell>${expense.amount.toLocaleString()}</TableCell>
+                      <TableCell>{expense.notes}</TableCell>
+                      <TableCell>
+                        {expense.receiptFile ? (
+                          <Button size="sm" onPress={() => console.log(`View receipt: ${expense.receiptFile}`)}>
+                            View Receipt
+                          </Button>
+                        ) : (
+                          'No receipt'
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </CardBody>
           </Card>
+          <Card>
+            <CardHeader>
+              <h4 className="text-lg font-semibold">Recent Projects</h4>
+            </CardHeader>
+            <Divider />
+            <CardBody>
+              <Table aria-label="Projects table">
+                <TableHeader>
+                  <TableColumn>Name</TableColumn>
+                  <TableColumn>Budget</TableColumn>
+                  <TableColumn>Status</TableColumn>
+                </TableHeader>
+                <TableBody>
+                  {projects.map((project) => (
+                    <TableRow key={project.id}>
+                      <TableCell>{project.name}</TableCell>
+                      <TableCell>${project.budget.toLocaleString()}</TableCell>
+                      <TableCell>
+                        <Chip color={project.status === "Running" ? "success" : "primary"}>
+                          {project.status}
+                        </Chip>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardBody>
+          </Card>
+
           <Card>
             <CardHeader>
               <h4 className="text-large font-bold">Financial Reports</h4>
@@ -186,71 +205,7 @@ export default function Dashboard() {
               </div>
             </CardBody>
           </Card>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <h4 className="text-large font-bold">Donation Entry</h4>
-              <p className="text-small text-default-500">Record a new donation to the masjid.</p>
-            </CardHeader>
-            <CardBody>
-              <form className="space-y-4">
-                <Input label="Donor Name" placeholder="Enter donor name" />
-                <Button variant="bordered" startContent={<Calendar className="w-4 h-4" />}>
-                  Select date
-                </Button>
-                <Input label="Donation Amount" type="number" placeholder="0.00" />
-                <Dropdown>
-                  <DropdownTrigger>
-                    <Button variant="bordered">Select donation type</Button>
-                  </DropdownTrigger>
-                  <DropdownMenu aria-label="Donation types">
-                    <DropdownItem key="general">General</DropdownItem>
-                    <DropdownItem key="zakat">Zakat</DropdownItem>
-                    <DropdownItem key="sadaqah">Sadaqah</DropdownItem>
-                    <DropdownItem key="project">Specific Project</DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-                <Input label="Notes" placeholder="Add any additional notes" />
-                <div className="flex justify-between">
-                  <Button color="danger" variant="light">Cancel</Button>
-                  <Button color="primary">Save Donation</Button>
-                </div>
-              </form>
-            </CardBody>
-          </Card>
-          <Card>
-            <CardHeader>
-              <h4 className="text-large font-bold">Expense Entry</h4>
-              <p className="text-small text-default-500">Record a new expense for the masjid.</p>
-            </CardHeader>
-            <CardBody>
-              <form className="space-y-4">
-                <Button variant="bordered" startContent={<Calendar className="w-4 h-4" />}>
-                  Select date
-                </Button>
-                <Dropdown>
-                  <DropdownTrigger>
-                    <Button variant="bordered">Select expense category</Button>
-                  </DropdownTrigger>
-                  <DropdownMenu aria-label="Expense categories">
-                    <DropdownItem key="utilities">Utilities</DropdownItem>
-                    <DropdownItem key="maintenance">Maintenance</DropdownItem>
-                    <DropdownItem key="supplies">Supplies</DropdownItem>
-                    <DropdownItem key="events">Events</DropdownItem>
-                    <DropdownItem key="salaries">Salaries</DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-                <Input label="Expense Amount" type="number" placeholder="0.00" />
-                <Input type="file" label="Receipt" />
-                <Input label="Notes" placeholder="Add any additional notes" />
-                <div className="flex justify-between">
-                  <Button color="danger" variant="light">Cancel</Button>
-                  <Button color="primary">Save Expense</Button>
-                </div>
-              </form>
-            </CardBody>
-          </Card>
+
         </div>
       </main>
     </div>

@@ -10,6 +10,7 @@ import Projects from './pages/Projects';
 import Donors from './pages/Donors';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
+import Dashboard from './pages/Dashboard';
 
 const NavbarWrapper = () => {
   const location = useLocation();
@@ -115,6 +116,7 @@ const App: React.FC = () => {
           <NavbarWrapper />
           <main className="flex min-h-[calc(100vh_-_64px)] flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
             <Routes>
+              <Route index element={<Dashboard />} />
               <Route path="/donations" element={<Donations />} />
               <Route path="/expenses" element={<Expenses />} />
               <Route path="/projects" element={<Projects />} />
