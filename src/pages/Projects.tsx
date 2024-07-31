@@ -3,14 +3,6 @@ import { Card, CardHeader, CardBody, CardFooter, Divider, Table, TableHeader, Ta
 import { getLocalStorage, setLocalStorage } from '../utils/localStorage';
 import { Project, Donation, Expense } from '../types';
 
-const initialProjects: Project[] = [
-  { id: 1, name: "Masjid Renovation", budget: 250000, startDate: "2023-04-01", endDate: "2023-09-30", status: "Running" },
-  { id: 2, name: "Community Center", budget: 500000, startDate: "2022-11-01", endDate: "2023-08-31", status: "Running" },
-  { id: 3, name: "Parking Lot Expansion", budget: 100000, startDate: "2023-06-15", endDate: "2023-11-30", status: "Running" },
-  { id: 4, name: "Playground Upgrade", budget: 75000, startDate: "2023-02-01", endDate: "2023-05-31", status: "Completed" },
-  { id: 5, name: "Roof Replacement", budget: 150000, startDate: "2022-09-01", endDate: "2023-03-31", status: "Completed" },
-];
-
 const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [newProject, setNewProject] = useState<Omit<Project, 'id' | 'status'>>({
@@ -24,7 +16,7 @@ const Projects: React.FC = () => {
   const [projectExpenses, setprojectExpenses] = useState<Expense[]>([]);
 
   useEffect(() => {
-    const storedProjects = getLocalStorage<Project[]>('projects', initialProjects);
+    const storedProjects = getLocalStorage<Project[]>('projects', []);
     setProjects(storedProjects);
   }, []);
 
