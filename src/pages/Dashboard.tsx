@@ -1,9 +1,10 @@
 import { Card, CardBody, CardHeader, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Chip, Divider } from "@nextui-org/react";
 import { Activity, CreditCard, DollarSign, Users, Calendar } from 'lucide-react';
 import { useState, useEffect } from "react";
-import { Donation, Project, Expense, 
+import {
+  Donation, Project, Expense,
   // Donor, StaffMember
- } from "../types";
+} from "../types";
 import { getLocalStorage } from "../utils/localStorage";
 
 export default function Dashboard() {
@@ -22,8 +23,8 @@ export default function Dashboard() {
     const storedDonations = getLocalStorage<Donation[]>('donations', []);
     const storedProjects = getLocalStorage<Project[]>('projects', []);
     const storedExpenses = getLocalStorage<Expense[]>('expenses', []);
-    
-    const totalDonations =  storedDonations.reduce((acc, donation) => acc + donation.amount, 0);
+
+    const totalDonations = storedDonations.reduce((acc, donation) => acc + donation.amount, 0);
     const totalExpenses = storedExpenses.reduce((acc, expense) => acc + expense.amount, 0);
     const totalBudget = storedProjects.reduce((acc, project) => acc + project.budget, 0);
 
@@ -118,7 +119,8 @@ export default function Dashboard() {
                 </TableBody>
               </Table>
             </CardBody>
-          </Card>          <Card>
+          </Card>
+          <Card>
             <CardHeader>
               <h4 className="text-lg font-semibold">Expense Tracking</h4>
             </CardHeader>
