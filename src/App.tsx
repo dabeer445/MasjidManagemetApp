@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link, useLocation } from 'react-router-dom';
-import { NextUIProvider, Navbar, NavbarBrand, NavbarContent, NavbarItem, Input, Avatar } from '@nextui-org/react';
-import { ChurchIcon, SearchIcon } from 'lucide-react';
+import { NextUIProvider, Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Input, Avatar } from '@nextui-org/react';
+import { Moon, SearchIcon } from 'lucide-react';
 
 // Import page components
 import Donations from './pages/Donations';
@@ -14,71 +14,58 @@ import Dashboard from './pages/Dashboard';
 
 const NavbarWrapper = () => {
   const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const isActive = (path: string) => {
     return location.pathname === path;
   };
 
+  const menuItems = [
+    { path: '/', label: 'Dashboard' },
+    { path: '/donations', label: 'Donations' },
+    { path: '/expenses', label: 'Expenses' },
+    { path: '/projects', label: 'Projects' },
+    { path: '/donors', label: 'Donors' },
+    { path: '/reports', label: 'Reports' },
+    { path: '/settings', label: 'Settings' },
+  ];
+
   return (
-    <Navbar isBordered>
-      <NavbarContent className="justify-start">
+    <Navbar 
+      isBordered 
+      isMenuOpen={isMenuOpen} 
+      onMenuOpenChange={setIsMenuOpen}
+      className="w-full max-w-full"
+      classNames={{
+        wrapper: "w-full max-w-full px-6",
+      }}
+    >
+      <NavbarContent className="sm:hidden" justify="start">
+        <NavbarMenuToggle aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
+      </NavbarContent>
+
+      <NavbarContent justify="start">
         <NavbarBrand>
-          <ChurchIcon className="w-6 h-6 mr-2" />
+          <Moon className="w-6 h-6 mr-2" />
           <p className="font-bold text-inherit">Masjid Management</p>
         </NavbarBrand>
       </NavbarContent>
-      <NavbarContent className="hidden sm:flex gap-4 justify-center">
-        <NavbarItem>
-          <Link
-            to="/donations"
-            className={isActive('/donations') ? 'bg-black text-white px-4 py-2 rounded' : 'px-4 py-2 rounded'}
-          >
-            Donations
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link
-            to="/expenses"
-            className={isActive('/expenses') ? 'bg-black text-white px-4 py-2 rounded' : 'px-4 py-2 rounded'}
-          >
-            Expenses
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link
-            to="/projects"
-            className={isActive('/projects') ? 'bg-black text-white px-4 py-2 rounded' : 'px-4 py-2 rounded'}
-          >
-            Projects
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link
-            to="/donors"
-            className={isActive('/donors') ? 'bg-black text-white px-4 py-2 rounded' : 'px-4 py-2 rounded'}
-          >
-            Donors
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link
-            to="/reports"
-            className={isActive('/reports') ? 'bg-black text-white px-4 py-2 rounded' : 'px-4 py-2 rounded'}
-          >
-            Reports
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link
-            to="/settings"
-            className={isActive('/settings') ? 'bg-black text-white px-4 py-2 rounded' : 'px-4 py-2 rounded'}
-          >
-            Settings
-          </Link>
-        </NavbarItem>
+
+      <NavbarContent className="hidden sm:flex" justify="center">
+        {menuItems.map((item) => (
+          <NavbarItem key={item.path}>
+            <Link
+              to={item.path}
+              className={`px-3 py-2 ${isActive(item.path) ? 'bg-primary text-white rounded' : 'text-foreground'}`}
+            >
+              {item.label}
+            </Link>
+          </NavbarItem>
+        ))}
       </NavbarContent>
-      <NavbarContent className="justify-end">
-        <NavbarItem>
+
+      <NavbarContent justify="end">
+        <NavbarItem className="hidden lg:flex">
           <Input
             classNames={{
               base: "max-w-full sm:max-w-[10rem] h-10",
@@ -104,6 +91,31 @@ const NavbarWrapper = () => {
           />
         </NavbarItem>
       </NavbarContent>
+
+      <NavbarMenu
+        className={`fixed top-[var(--navbar-height)] left-0 bottom-0 w-full max-w-[300px] p-0 transition-transform duration-300 ease-in-out ${
+          isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        {menuItems.map((item, index) => (
+          <React.Fragment key={`${item.path}-${index}`}>
+            <NavbarMenuItem>
+              <Link
+                to={item.path}
+                className={`w-full block py-4 px-6 text-lg ${
+                  isActive(item.path) ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-default-100'
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            </NavbarMenuItem>
+            {index < menuItems.length - 1 && (
+              <div className="w-full h-px bg-default-200" />
+            )}
+          </React.Fragment>
+        ))}
+      </NavbarMenu>
     </Navbar>
   );
 };

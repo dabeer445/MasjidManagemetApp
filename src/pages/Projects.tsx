@@ -1,213 +1,136 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardHeader, CardBody, CardFooter, Divider, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Input, Button, Chip } from '@nextui-org/react';
-import { getLocalStorage, setLocalStorage } from '../utils/localStorage';
+import React, { useState } from 'react';
+import { CustomCard } from '../components/CustomCard';
+import { CustomTable, Column } from '../components/CustomTable';
+import { FormInput, FormSelect } from '../components/FormComponents';
+import { SubmitButton, CancelButton } from '../components/ButtonComponents';
 import { Project, Donation, Expense } from '../types';
+import { useAllData } from '../hooks/useHooks';
+import { formatCurrency, formatDate } from '../utils/functions';
 
 const Projects: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [newProject, setNewProject] = useState<Omit<Project, 'id' | 'status'>>({
+  const { projects, addProject, donations, expenses } = useAllData();
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [newProject, setNewProject] = useState<Omit<Project, 'id'>>({
     name: '',
     budget: 0,
     startDate: '',
-    endDate: ''
+    endDate: '',
+    status: 'Running'
   });
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [projectDonations, setProjectDonations] = useState<Donation[]>([]);
-  const [projectExpenses, setprojectExpenses] = useState<Expense[]>([]);
-
-  useEffect(() => {
-    const storedProjects = getLocalStorage<Project[]>('projects', []);
-    setProjects(storedProjects);
-  }, []);
-
-  useEffect(() => {
-    if (selectedProject) {
-      const allDonations = getLocalStorage<Donation[]>('donations', []);
-      const allExpenses = getLocalStorage<Expense[]>('expenses', []);
-      const filteredDonations = allDonations.filter(donation => donation.project === selectedProject.id.toString());
-      const filteredExpenses = allExpenses.filter(expense => expense.project === selectedProject.id.toString());
-      setProjectDonations(filteredDonations);
-      setprojectExpenses(filteredExpenses);
-    }
-  }, [selectedProject]);
-
-  const handleShowDetails = (project: Project) => {
-    setSelectedProject(project);
-  };
 
   const handleAddNewProject = () => {
     if (!newProject.name || newProject.budget <= 0 || !newProject.startDate || !newProject.endDate) {
       alert("Please fill in all fields");
       return;
     }
-
-    const updatedProjects: Project[] = [
-      ...projects,
-      {
-        ...newProject,
-        id: projects.length + 1,
-        status: "Running"
-      }
-    ];
-
-    setProjects(updatedProjects);
-    setLocalStorage('projects', updatedProjects);
-    setNewProject({ name: '', budget: 0, startDate: '', endDate: '' });
+    addProject(newProject);
+    setNewProject({ name: '', budget: 0, startDate: '', endDate: '', status: 'Running' });
   };
+
+  const projectColumns: Column<Project>[] = [
+    { key: "name", label: "Name" },
+    { key: "budget", label: "Budget", render: (project) => formatCurrency(project.budget) },
+    { key: "status", label: "Status" },
+    { 
+      key: "actions", 
+      label: "Actions", 
+      render: (project) => (
+        <SubmitButton onClick={() => setSelectedProject(project)}>
+          Show Details
+        </SubmitButton>
+      )
+    },
+  ];
+
+  const projectDonations = selectedProject
+    ? donations.filter(donation => donation.project === selectedProject.id.toString())
+    : [];
+  const projectExpenses = selectedProject
+    ? expenses.filter(expense => expense.project === selectedProject.name)
+    : [];
+
+  const donationColumns: Column<Donation>[] = [
+    { key: "donor", label: "Donor" },
+    { key: "date", label: "Date", render: (donation) => formatDate(donation.date) },
+    { key: "amount", label: "Amount", render: (donation) => formatCurrency(donation.amount) },
+  ];
+
+  const expenseColumns: Column<Expense>[] = [
+    { key: "date", label: "Date", render: (expense) => formatDate(expense.date) },
+    { key: "amount", label: "Amount", render: (expense) => formatCurrency(expense.amount) },
+    { key: "notes", label: "Notes" },
+  ];
 
   return (
     <div className="flex flex-col gap-4">
       <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <h4 className="text-lg font-semibold">Recent Projects</h4>
-          </CardHeader>
-          <Divider />
-          <CardBody>
-            <Table aria-label="Projects table">
-              <TableHeader>
-                <TableColumn>Name</TableColumn>
-                <TableColumn>Budget</TableColumn>
-                <TableColumn>Status</TableColumn>
-                <TableColumn>Actions</TableColumn>
-              </TableHeader>
-              <TableBody>
-                {projects.map((project) => (
-                  <TableRow key={project.id}>
-                    <TableCell>{project.name}</TableCell>
-                    <TableCell>PKR {project.budget.toLocaleString()}</TableCell>
-                    <TableCell>
-                      <Chip color={project.status === "Running" ? "success" : "primary"}>
-                        {project.status}
-                      </Chip>
-                    </TableCell>
-                    <TableCell>
-                      <Button size="sm" onPress={() => handleShowDetails(project)}>
-                        Show Details
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardBody>
-        </Card>
-        <Card>
-          <CardHeader>
-            <h4 className="text-lg font-semibold">Add New Project</h4>
-          </CardHeader>
-          <Divider />
-          <CardBody>
-            <form className="flex flex-col gap-4">
-              <Input
-                label="Project Name"
-                placeholder="Enter project name"
-                value={newProject.name}
-                onChange={(e) => setNewProject(prev => ({ ...prev, name: e.target.value }))}
-              />
-              <Input
-                type="number"
-                label="Budget"
-                placeholder="0.00"
-                value={newProject.budget.toString()}
-                onChange={(e) => setNewProject(prev => ({ ...prev, budget: parseFloat(e.target.value) || 0 }))}
-              />
-              <Input
-                type="date"
-                label="Start Date"
-                value={newProject.startDate}
-                onChange={(e) => setNewProject(prev => ({ ...prev, startDate: e.target.value }))}
-              />
-              <Input
-                type="date"
-                label="Expected End Date"
-                value={newProject.endDate}
-                onChange={(e) => setNewProject(prev => ({ ...prev, endDate: e.target.value }))}
-              />
-            </form>
-          </CardBody>
-          <CardFooter>
-            <div className="flex justify-between w-full">
-              <Button color="danger" variant="light" onPress={() => setNewProject({ name: '', budget: 0, startDate: '', endDate: '' })}>
+        <CustomCard title="Recent Projects">
+          <CustomTable data={projects} columns={projectColumns} />
+        </CustomCard>
+        <CustomCard title="Add New Project">
+          <form className="flex flex-col gap-4">
+            <FormInput
+              label="Project Name"
+              value={newProject.name}
+              onChange={(value: any) => setNewProject({ ...newProject, name: value as string })}
+            />
+            <FormInput
+              label="Budget"
+              type="number"
+              value={newProject.budget}
+              onChange={(value: any) => setNewProject({ ...newProject, budget: parseFloat(value as string) || 0 })}
+            />
+            <FormInput
+              label="Start Date"
+              type="date"
+              value={newProject.startDate}
+              onChange={(value: any) => setNewProject({ ...newProject, startDate: value as string })}
+            />
+            <FormInput
+              label="Expected End Date"
+              type="date"
+              value={newProject.endDate}
+              onChange={(value: any) => setNewProject({ ...newProject, endDate: value as string })}
+            />
+            <FormSelect
+              label="Status"
+              value={newProject.status}
+              onChange={(value: any) => setNewProject({ ...newProject, status: value as string })}
+              options={[
+                { value: "Running", label: "Running" },
+                { value: "Completed", label: "Completed" },
+                { value: "On Hold", label: "On Hold" }
+              ]}
+            />
+            <div className="flex justify-end mt-4">
+              <CancelButton onClick={() => setNewProject({ name: '', budget: 0, startDate: '', endDate: '', status: 'Running' })}>
                 Cancel
-              </Button>
-              <Button color="primary" onPress={handleAddNewProject}>Save Project</Button>
+              </CancelButton>
+              <SubmitButton onClick={handleAddNewProject}>Add Project</SubmitButton>
             </div>
-          </CardFooter>
-        </Card>
+          </form>
+        </CustomCard>
       </div>
+      
       {selectedProject && (
-        <Card>
-          <CardHeader>
-            <h4 className="text-lg font-semibold">Project Details: {selectedProject.name}</h4>
-          </CardHeader>
-          <Divider />
-          <CardBody>
-            <div className="mb-4">
-              <p><strong>Budget:</strong> PKR {selectedProject.budget.toLocaleString()}</p>
-              <p><strong>Start Date:</strong> {selectedProject.startDate}</p>
-              <p><strong>End Date:</strong> {selectedProject.endDate}</p>
-              <p><strong>Status:</strong> {selectedProject.status}</p>
+        <CustomCard title={`Project Details: ${selectedProject.name}`}>
+          <div className="mb-4">
+            <p><strong>Budget:</strong> {formatCurrency(selectedProject.budget)}</p>
+            <p><strong>Start Date:</strong> {formatDate(selectedProject.startDate)}</p>
+            <p><strong>End Date:</strong> {formatDate(selectedProject.endDate)}</p>
+            <p><strong>Status:</strong> {selectedProject.status}</p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <h5 className="text-lg font-semibold mb-2">Donations</h5>
+              <CustomTable data={projectDonations} columns={donationColumns} />
             </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              <Card>
-                <CardHeader>
-                  <h5 className="text-md font-semibold">Donations</h5>
-                </CardHeader>
-                <CardBody>
-                  <Table aria-label="Project donations table">
-                    <TableHeader>
-                      <TableColumn>Donor</TableColumn>
-                      <TableColumn>Date</TableColumn>
-                      <TableColumn>Amount</TableColumn>
-                    </TableHeader>
-                    <TableBody>
-                      {projectDonations.map((donation, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{donation.donor}</TableCell>
-                          <TableCell>{donation.date}</TableCell>
-                          <TableCell>PKR {donation.amount}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardBody>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <h5 className="text-md font-semibold">Expenses</h5>
-                </CardHeader>
-                <CardBody>
-                  <Table aria-label="Project donations table">
-                    <TableHeader>
-                      <TableColumn>Date</TableColumn>
-                      <TableColumn>Amount</TableColumn>
-                      <TableColumn>Notes</TableColumn>
-                      <TableColumn>Reciept</TableColumn>
-                    </TableHeader>
-                    <TableBody>
-                      {projectExpenses.map((expense, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{expense.date}</TableCell>
-                          <TableCell>PKR {expense.amount}</TableCell>
-                          <TableCell>{expense.notes}</TableCell>
-                          <TableCell>
-                            {expense.receiptFile ? (
-                              <Button size="sm" onPress={() => console.log(`View receipt: ${expense.receiptFile}`)}>
-                                View Receipt
-                              </Button>
-                            ) : (
-                              'No receipt'
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>                </CardBody>
-              </Card>
+            <div>
+              <h5 className="text-lg font-semibold mb-2">Expenses</h5>
+              <CustomTable data={projectExpenses} columns={expenseColumns} />
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </CustomCard>
       )}
     </div>
   );

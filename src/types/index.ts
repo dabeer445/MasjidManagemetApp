@@ -1,22 +1,24 @@
 // types/index.ts
 export interface Donor {
-  id: number;
+  id: string;
   name: string;
   number: string;
   address: string;
 }
 
 export interface Donation {
-  id: number;
+  id: string;
   donor: string;
   date: string;
   amount: number;
   type: string;
   project: string;
+  receiptImage: string | null;
+  isAnonymous: boolean;
 }
 
 export interface Project {
-  id: number;
+  id: string;
   name: string;
   budget: number;
   startDate: string;
@@ -25,7 +27,7 @@ export interface Project {
 }
 
 export interface Expense {
-  id: number;
+  id: string;
   date: string;
   category: 'Utilities' | 'Maintenance' | 'Salaries' | 'Projects';
   amount: number;
@@ -37,7 +39,7 @@ export interface Expense {
 }
 
 export interface StaffMember {
-  id: number;
+  id: string;
   name: string;
   number: string;
   salary: number;
