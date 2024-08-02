@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { CustomModal } from '../components/CustomModal';
-import { FormInput, FormSelect } from '../components/FormComponents';
-import { SubmitButton, CancelButton } from '../components/ButtonComponents';
-import { Expense, Project, StaffMember } from '../types';
+import { CancelButton } from '../components/ButtonComponents';
+import { Expense } from '../types';
 
 interface ViewReceiptModalProps {
   isOpen: boolean;

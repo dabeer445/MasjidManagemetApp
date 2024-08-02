@@ -51,11 +51,6 @@ const Donations: React.FC = () => {
       updateDonation({ ...donationToUpdate, donor: newDonor.name });
     }
   };
-  const handleFileChange = (file: File | null | any) => {
-    if (file) {
-      setNewDonation(prev => ({ ...prev, receiptFile: file.name }));
-    }
-  };
   const donationColumns: Column<Donation>[] = [
     { key: "donor", label: "Donor" },
     { key: "date", label: "Date" },
