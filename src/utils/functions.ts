@@ -13,7 +13,7 @@ export const formatDate = (date: string): string => {
 };
 
 export const fetchGraphQL = async (query: string) => {
-  const Endpoint = "https://81c1f90b-be7a-4c51-b1cd-7c0511a5c82f-00-1r83knftukhv5.pike.replit.dev/graphql"
+  const Endpoint = "https://masjid-management-system-levelfeed.replit.app/graphql"
 
   const response = await fetch(Endpoint, {
     method: 'POST',

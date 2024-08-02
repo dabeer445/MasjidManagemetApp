@@ -53,7 +53,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadSuccess, onUploadErro
         },
       })
       .use(XHRUpload, {
-        endpoint: 'https://81c1f90b-be7a-4c51-b1cd-7c0511a5c82f-00-1r83knftukhv5.pike.replit.dev/upload',
+        endpoint: 'https://masjid-management-system-levelfeed.replit.app/upload',
         formData: true,
         fieldName: 'file',
       });
