@@ -47,7 +47,7 @@ const NavbarWrapper = () => {
       <NavbarContent justify="start">
         <NavbarBrand>
           <Moon className="w-6 h-6 mr-2" />
-          <p className="font-bold text-inherit">Masjid Management</p>
+          <p className="font-bold text-inherit">Muhammadi Management</p>
         </NavbarBrand>
       </NavbarContent>
 
