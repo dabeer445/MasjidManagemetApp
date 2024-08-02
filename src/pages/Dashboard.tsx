@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import  { useMemo } from "react";
 import { CustomCard } from "../components/CustomCard";
 import { CustomTable, Column } from "../components/CustomTable";
 import { FormInput, FormSelect } from "../components/FormComponents";
@@ -6,7 +6,7 @@ import { SubmitButton } from "../components/ButtonComponents";
 import { DollarSign } from 'lucide-react';
 import { Donation, Project, Expense } from "../types";
 import { useAllData } from "../hooks/useHooks";
-import { formatCurrency, formatDate } from "../utils/functions";
+import { formatCurrency } from "../utils/functions";
 
 export default function Dashboard() {
   const { donations, expenses, projects } = useAllData();
