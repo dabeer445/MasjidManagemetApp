@@ -1,59 +1,43 @@
-import { useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import { CustomCard } from "../components/CustomCard";
 import { CustomTable, Column } from "../components/CustomTable";
 import { FormInput, FormSelect } from "../components/FormComponents";
 import { SubmitButton } from "../components/ButtonComponents";
 import { DollarSign } from 'lucide-react';
 import { Donation, Project, Expense } from "../types";
-import { getLocalStorage } from "../utils/localStorage";
+import { useAllData } from "../hooks/useHooks";
+import { formatCurrency, formatDate } from "../utils/functions";
 
 export default function Dashboard() {
-  const [donations, setDonations] = useState<Donation[]>([]);
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [totalDonations, setTotalDonations] = useState<number>(0);
-  const [totalExpenses, setTotalExpenses] = useState<number>(0);
-  const [totalBudget, setTotalBudget] = useState<number>(0);
-  const [projects, setProjects] = useState<Project[]>([]);
+  const { donations, expenses, projects } = useAllData();
 
-  useEffect(() => {
-    const storedDonations = getLocalStorage<Donation[]>('donations', []);
-    const storedProjects = getLocalStorage<Project[]>('projects', []);
-    const storedExpenses = getLocalStorage<Expense[]>('expenses', []);
-
-    const totalDonations = storedDonations.reduce((acc, donation) => acc + donation.amount, 0);
-    const totalExpenses = storedExpenses.reduce((acc, expense) => acc + expense.amount, 0);
-    const totalBudget = storedProjects.reduce((acc, project) => acc + project.budget, 0);
-
-    setExpenses(storedExpenses);
-    setDonations(storedDonations);
-    setProjects(storedProjects);
-    setTotalDonations(totalDonations);
-    setTotalExpenses(totalExpenses);
-    setTotalBudget(totalBudget);
-  }, []);
+  const totalDonations = useMemo(() => donations.reduce((acc, donation) => acc + donation.amount, 0), [donations]);
+  const totalExpenses = useMemo(() => expenses.reduce((acc, expense) => acc + expense.amount, 0), [expenses]);
+  const totalBudget = useMemo(() => projects.reduce((acc, project) => acc + project.budget, 0), [projects]);
+  const zakatDonations = useMemo(() => donations.filter(donation => donation.type === 'zakat').reduce((acc, donation) => acc + donation.amount, 0), [donations]);
 
   const donationColumns: Column<Donation>[] = [
     { key: "donor", label: "Donor" },
     { key: "date", label: "Date" },
-    { key: "amount", label: "Amount" },
+    { key: "amount", label: "Amount", render: (donation) => formatCurrency(donation.amount) },
     { key: "type", label: "Type" },
     { key: "project", label: "Project" },
   ];
 
   const expenseColumns: Column<Expense>[] = [
-    { key: "date", label: "Date" },
+    { key: "date", label: "Date"},
     { key: "category", label: "Category" },
-    { key: "amount", label: "Amount" },
+    { key: "amount", label: "Amount", render: (expense) => formatCurrency(expense.amount) },
     { key: "notes", label: "Notes" },
-    {
-      key: "receiptFile", label: "Receipt", render: (expense: Expense) =>
-        expense.receiptFile ? <SubmitButton onClick={() => console.log(`View receipt: ${expense.receiptFile}`)}>View Receipt</SubmitButton> : 'No receipt'
-    },
+    // {
+    //   key: "receiptFile", label: "Receipt", render: (expense: Expense) =>
+    //     expense.receiptFile ? <a href={expense.receiptFile} target="_blank" rel="noopener noreferrer">View Receipt</a> : 'No receipt'
+    // },
   ];
 
   const projectColumns: Column<Project>[] = [
     { key: "name", label: "Name" },
-    { key: "budget", label: "Budget" },
+    { key: "budget", label: "Budget", render: (project) => formatCurrency(project.budget) },
     { key: "status", label: "Status" },
   ];
 
@@ -67,8 +51,7 @@ export default function Dashboard() {
               <DollarSign className="w-4 h-4 text-default-400" />
             </div>
             <div className="flex flex-col mt-2">
-              <span className="text-2xl font-semibold">PKR {totalDonations.toLocaleString()}</span>
-              <span className="text-xs text-default-400">+20.1% from last year</span>
+              <span className="text-2xl font-semibold">{formatCurrency(totalDonations)}</span>
             </div>
           </CustomCard>
           <CustomCard>
@@ -77,8 +60,7 @@ export default function Dashboard() {
               <DollarSign className="w-4 h-4 text-default-400" />
             </div>
             <div className="flex flex-col mt-2">
-              <span className="text-2xl font-semibold">PKR {totalDonations.toLocaleString()}</span>
-              <span className="text-xs text-default-400">+20.1% from last year</span>
+              <span className="text-2xl font-semibold">{formatCurrency(zakatDonations)}</span>
             </div>
           </CustomCard>
           <CustomCard>
@@ -87,8 +69,7 @@ export default function Dashboard() {
               <DollarSign className="w-4 h-4 text-default-400" />
             </div>
             <div className="flex flex-col mt-2">
-              <span className="text-2xl font-semibold">PKR {totalExpenses.toLocaleString()}</span>
-              <span className="text-xs text-default-400">+20.1% from last year</span>
+              <span className="text-2xl font-semibold">{formatCurrency(totalExpenses)}</span>
             </div>
           </CustomCard>
           <CustomCard>
@@ -97,21 +78,19 @@ export default function Dashboard() {
               <DollarSign className="w-4 h-4 text-default-400" />
             </div>
             <div className="flex flex-col mt-2">
-              <span className="text-2xl font-semibold">PKR {totalBudget.toLocaleString()}</span>
-              <span className="text-xs text-default-400">+20.1% from last year</span>
+              <span className="text-2xl font-semibold">{formatCurrency(totalBudget)}</span>
             </div>
           </CustomCard>
-          {/* Similar CustomCard components for other statistics */}
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <CustomCard title="Donation Tracking">
-            <CustomTable data={donations} columns={donationColumns} />
+          <CustomCard title="Recent Donations">
+            <CustomTable data={donations.slice(0, 5)} columns={donationColumns} />
           </CustomCard>
-          <CustomCard title="Expense Tracking">
-            <CustomTable data={expenses} columns={expenseColumns} />
+          <CustomCard title="Recent Expenses">
+            <CustomTable data={expenses.slice(0, 5)} columns={expenseColumns} />
           </CustomCard>
           <CustomCard title="Recent Projects">
-            <CustomTable data={projects} columns={projectColumns} />
+            <CustomTable data={projects.slice(0, 5)} columns={projectColumns} />
           </CustomCard>
           <CustomCard title="Financial Reports">
             <div className="space-y-4">

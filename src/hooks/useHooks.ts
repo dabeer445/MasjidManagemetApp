@@ -177,7 +177,16 @@ export const useExpenses = () => {
       `;
 
       const data = await fetchGraphQL(query);
-      setExpenses(data.expenses);
+      const transformedExpenses = data.expenses.map((expense: Expense) => ({
+        id: expense.id,
+        category: expense.category, // Flatten donor's name
+        date: formatDateLocal(parseInt(expense.date)),
+        amount: expense.amount,
+        notes: getDonationTypeLabel(expense.notes),
+        receiptFile: expense.receiptFile,
+      }));
+
+      setExpenses(transformedExpenses);
     };
 
     fetchExpenses();
