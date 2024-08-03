@@ -10,6 +10,7 @@ import '@uppy/core/dist/style.min.css';
 import '@uppy/dashboard/dist/style.min.css';
 import '@uppy/webcam/dist/style.min.css';
 import '@uppy/image-editor/dist/style.min.css';
+import { API_URL } from '../utils/const';
 
 interface ImageUploadProps {
   onUploadSuccess: (url: string) => void;
@@ -58,7 +59,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadSuccess, onUploadErro
           },
         })
         .use(XHRUpload, {
-          endpoint: 'https://masjid-management-system-levelfeed.replit.app/upload',
+          endpoint: API_URL + '/upload',
           formData: true,
           fieldName: 'file',
           allowedMetaFields: ['type'],

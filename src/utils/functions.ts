@@ -1,4 +1,4 @@
-import { DonationTypes } from "./const";
+import { API_URL, DonationTypes } from "./const";
 
 export const formatCurrency = (amount: number): string => {
   return `PKR ${amount.toLocaleString()}`;
@@ -13,7 +13,7 @@ export const formatDate = (date: string): string => {
 };
 
 export const fetchGraphQL = async (query: string) => {
-  const Endpoint = "https://masjid-management-system-levelfeed.replit.app/graphql"
+  const Endpoint = API_URL + "/graphql"
 
   const response = await fetch(Endpoint, {
     method: 'POST',

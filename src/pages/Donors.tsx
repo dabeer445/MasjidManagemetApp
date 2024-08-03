@@ -134,7 +134,6 @@ const Donors: React.FC = () => {
     }));
   }, [donors, donations]);
   
-  console.log(donorsWithTotalDonations)
 
   const donorColumns: Column<Donor & { totalDonations: number }>[] = [
     { key: "name", label: "Name" },

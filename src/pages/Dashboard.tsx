@@ -9,7 +9,6 @@ import { formatCurrency } from "../utils/functions";
 export default function Dashboard() {
   const { donations, expenses, projects } = useAllData();
   
-console.log(donations)
   const totalDonations = useMemo(() => donations.reduce((acc, donation) => acc + donation.amount, 0), [donations]);
   const totalExpenses = useMemo(() => expenses.reduce((acc, expense) => acc + expense.amount, 0), [expenses]);
   // const totalBudget = useMemo(() => projects.reduce((acc, project) => acc + project.budget, 0), [projects]);
