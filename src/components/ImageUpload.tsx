@@ -15,7 +15,7 @@ interface ImageUploadProps {
   onUploadSuccess: (url: string) => void;
   onUploadError: (error: Error) => void;
   type: 'donation' | 'expense';
-//   resetTrigger: number;
+  //   resetTrigger: number;
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadSuccess, onUploadError, type }) => {
@@ -32,31 +32,36 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadSuccess, onUploadErro
         },
         autoProceed: false,
       })
-      .use(Webcam)
-      .use(ImageEditor, {
-        cropperOptions: {
-          viewMode: 1,
-          background: false,
-          autoCropArea: 1,
-          responsive: true,
-        },
-        actions: {
-          revert: true,
-          rotate: true,
-          granularRotate: true,
-          flip: true,
-          zoomIn: true,
-          zoomOut: true,
-          cropSquare: true,
-          cropWidescreen: true,
-          cropWidescreenVertical: true,
-        },
-      })
-      .use(XHRUpload, {
-        endpoint: 'https://masjid-management-system-levelfeed.replit.app/upload',
-        formData: true,
-        fieldName: 'file',
-      });
+        .use(Webcam, {
+          showVideoSourceDropdown: true,
+          mirror: false,
+          modes: ['picture'],
+          mobileNativeCamera: true
+        })
+        .use(ImageEditor, {
+          cropperOptions: {
+            viewMode: 1,
+            background: false,
+            autoCropArea: 1,
+            responsive: true,
+          },
+          actions: {
+            revert: true,
+            rotate: true,
+            granularRotate: true,
+            flip: true,
+            zoomIn: true,
+            zoomOut: true,
+            cropSquare: true,
+            cropWidescreen: true,
+            cropWidescreenVertical: true,
+          },
+        })
+        .use(XHRUpload, {
+          endpoint: 'https://masjid-management-system-levelfeed.replit.app/upload',
+          formData: true,
+          fieldName: 'file',
+        });
 
       uppyRef.current.on('complete', (result: { successful: string | any[]; }) => {
         if (result.successful && result.successful.length > 0) {
@@ -83,12 +88,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadSuccess, onUploadErro
     // };
   }, [type, onUploadSuccess, onUploadError]);
 
-//   useEffect(() => {
-//     if (uppyRef.current) {
-//       uppyRef.current.reset();
-//       setIsModalOpen(false);
-//     }
-//   }, [resetTrigger]);
+  //   useEffect(() => {
+  //     if (uppyRef.current) {
+  //       uppyRef.current.reset();
+  //       setIsModalOpen(false);
+  //     }
+  //   }, [resetTrigger]);
 
   return (
     <>
@@ -109,3 +114,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadSuccess, onUploadErro
 };
 
 export default ImageUpload;
+
+function isMobile(arg0: { tablet: boolean; }): boolean | undefined {
+  throw new Error('Function not implemented.');
+}
