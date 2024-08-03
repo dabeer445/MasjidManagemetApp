@@ -130,10 +130,9 @@ const Donors: React.FC = () => {
   const donorsWithTotalDonations = useMemo(() => {
     return donors.map(donor => ({
       ...donor,
-      totalDonations: calculateTotalDonations(donor.name)
+      totalDonations: calculateTotalDonations(donor.id)
     }));
   }, [donors, donations]);
-  
 
   const donorColumns: Column<Donor & { totalDonations: number }>[] = [
     { key: "name", label: "Name" },
@@ -151,7 +150,7 @@ const Donors: React.FC = () => {
   ];
 
   const donorDonations = selectedDonor
-    ? donations.filter(donation => donation.donor === selectedDonor.name)
+    ? donations.filter(donation => donation.donor === selectedDonor.id)
     : [];
 
   const donationColumns: Column<Donation>[] = [
@@ -162,7 +161,7 @@ const Donors: React.FC = () => {
   ];
 
   const selectedDonorTotalDonations = selectedDonor
-    ? calculateTotalDonations(selectedDonor.name)
+    ? calculateTotalDonations(selectedDonor.id)
     : 0;
 
   return (

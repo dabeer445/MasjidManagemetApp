@@ -82,11 +82,11 @@ const Donations: React.FC = () => {
   };
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
-      <CustomCard title="Donation Tracking">
-        <CustomTable data={donations} columns={donationColumns} />
+<div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+      <CustomCard title="Recent Donations" className="md:col-span-1">
+        <CustomTable data={donations.slice(0, 6)} columns={donationColumns} />
       </CustomCard>
-      <CustomCard title="Donation Entry">
+      <CustomCard title="Donation Entry" className="md:col-span-1">
         <form className="flex flex-col gap-4">
           <FormSelect
             label="Donor Name"
@@ -165,6 +165,10 @@ const Donations: React.FC = () => {
           </CancelButton>
           <SubmitButton onClick={handleAddNewDonation}>Save Donation</SubmitButton>
         </div>
+      </CustomCard>
+
+      <CustomCard title="All Donations" className="md:col-span-2">
+        <CustomTable data={donations} columns={donationColumns} />
       </CustomCard>
 
       <NewDonorModal

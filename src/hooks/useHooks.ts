@@ -1,3 +1,257 @@
+// import useSWR from 'swr';
+// import { Donor, Donation, Project, Expense, StaffMember } from '../types';
+// import { fetchGraphQL, formatDateLocal, getDonationTypeLabel } from '../utils/functions';
+
+// const fetcher = (query: string) => fetchGraphQL(query).then(data => data);
+
+// // Donors Hooks
+// export const useDonors = () => {
+//   const { data, error, mutate } = useSWR<{ donors: Donor[] }>(
+//     `query { donors { id name number address } }`,
+//     fetcher
+//   );
+
+//   const addDonor = async (newDonor: Omit<Donor, 'id'>) => {
+//     const mutation = `
+//       mutation {
+//         addDonor(name: "${newDonor.name}", number: "${newDonor.number}", address: "${newDonor.address}") {
+//           id name number address
+//         }
+//       }
+//     `;
+//     const result = await fetchGraphQL(mutation);
+//     mutate();
+//     return result.addDonor;
+//   };
+
+//   const updateDonor = async (updatedDonor: Donor) => {
+//     // Implement the update mutation here
+//     // Then revalidate the cache
+//     mutate();
+//   };
+
+//   return {
+//     donors: data?.donors || [],
+//     isLoading: !error && !data,
+//     isError: error,
+//     addDonor,
+//     updateDonor,
+//   };
+// };
+
+// // Donation Hooks
+// export const useDonations = () => {
+//   const { data, error, mutate } = useSWR<{ donations: any[] }>(
+//     `query {
+//       donations {
+//         id
+//         donor { id name number address }
+//         date
+//         amount
+//         type
+//         project { id name budget startDate endDate status }
+//       }
+//     }`,
+//     fetcher
+//   );
+
+//   const transformedDonations = data?.donations.map((donation: any) => ({
+//     id: donation.id,
+//     donor: donation.donor.name,
+//     date: formatDateLocal(parseInt(donation.date)),
+//     amount: donation.amount,
+//     type: getDonationTypeLabel(donation.type),
+//     project: donation.project ? donation.project.name : '-',
+//   })).reverse() || [];
+
+//   const addDonation = async (newDonation: Omit<Donation, 'id'>) => {
+//     const mutation = `
+//       mutation {
+//         addDonation(donorId: "${newDonation.donor}", date: "${newDonation.date}", amount: ${newDonation.amount}, type: "${newDonation.type}", projectId: "${newDonation.project}", receiptImage: "${newDonation.receiptImage}", isAnonymous: ${newDonation.isAnonymous}) {
+//           id
+//           donor { id name number address }
+//           date
+//           amount
+//           type
+//           project { id name budget startDate endDate status }
+//           receiptImage
+//           isAnonymous
+//         }
+//       }
+//     `;
+//     const result = await fetchGraphQL(mutation);
+//     mutate();
+//     return result.addDonation;
+//   };
+
+//   const updateDonation = async (updatedDonation: Donation) => {
+//     // Implement the update mutation here
+//     // Then revalidate the cache
+//     mutate();
+//   };
+
+//   return {
+//     donations: transformedDonations,
+//     isLoading: !error && !data,
+//     isError: error,
+//     addDonation,
+//     updateDonation,
+//   };
+// };
+
+// // Expenses Hooks
+// export const useExpenses = () => {
+//   const { data, error, mutate } = useSWR<{ expenses: any[] }>(
+//     `query {
+//       expenses {
+//         id
+//         date
+//         category
+//         amount
+//         notes
+//         utilityType
+//         staffMember
+//         project { id name budget startDate endDate status }
+//         receiptFile
+//       }
+//     }`,
+//     fetcher
+//   );
+
+//   const transformedExpenses = data?.expenses.map((expense: any) => ({
+//     id: expense.id,
+//     category: expense.category,
+//     date: formatDateLocal(parseInt(expense.date)),
+//     amount: expense.amount,
+//     notes: expense.notes,
+//     receiptFile: expense.receiptFile,
+//   })).reverse() || [];
+
+//   const addExpense = async (newExpense: Omit<Expense, 'id'>) => {
+//     const mutation = `
+//       mutation {
+//         addExpense(date: "${newExpense.date}", category: "${newExpense.category}", amount: ${newExpense.amount}, notes: "${newExpense.notes}", utilityType: "${newExpense.utilityType}", staffMember: "${newExpense.staffMember}", projectId: "${newExpense.project}", receiptFile: "${newExpense.receiptFile}") {
+//           id
+//           date
+//           category
+//           amount
+//           notes
+//           utilityType
+//           staffMember
+//           project { id name budget startDate endDate status }
+//           receiptFile
+//         }
+//       }
+//     `;
+//     const result = await fetchGraphQL(mutation);
+//     mutate();
+//     return result.addExpense;
+//   };
+
+//   const updateExpense = async (updatedExpense: Expense) => {
+//     // Implement the update mutation here
+//     // Then revalidate the cache
+//     mutate();
+//   };
+
+//   return {
+//     expenses: transformedExpenses,
+//     isLoading: !error && !data,
+//     isError: error,
+//     addExpense,
+//     updateExpense,
+//   };
+// };
+
+// // StaffMembers Hooks
+// export const useStaffMembers = () => {
+//   const { data, error, mutate } = useSWR<{ staffMembers: StaffMember[] }>(
+//     `query { staffMembers { id name number salary } }`,
+//     fetcher
+//   );
+
+//   const addStaffMember = async (newStaffMember: Omit<StaffMember, 'id'>) => {
+//     const mutation = `
+//       mutation {
+//         addStaffMember(name: "${newStaffMember.name}", number: "${newStaffMember.number}", salary: ${newStaffMember.salary}) {
+//           id name number salary
+//         }
+//       }
+//     `;
+//     const result = await fetchGraphQL(mutation);
+//     mutate();
+//     return result.addStaffMember;
+//   };
+
+//   const updateStaffMember = async (updatedStaffMember: StaffMember) => {
+//     // Implement the update mutation here
+//     // Then revalidate the cache
+//     mutate();
+//   };
+
+//   return {
+//     staffMembers: data?.staffMembers || [],
+//     isLoading: !error && !data,
+//     isError: error,
+//     addStaffMember,
+//     updateStaffMember,
+//   };
+// };
+
+// // Projects Hooks
+// export const useProjects = () => {
+//   const { data, error, mutate } = useSWR<{ projects: Project[] }>(
+//     `query { projects { id name budget startDate endDate status } }`,
+//     fetcher
+//   );
+
+//   const addProject = async (newProject: Omit<Project, 'id'>) => {
+//     const mutation = `
+//       mutation {
+//         addProject(name: "${newProject.name}", budget: ${newProject.budget}, startDate: "${newProject.startDate}", endDate: "${newProject.endDate}", status: "${newProject.status}") {
+//           id name budget startDate endDate status
+//         }
+//       }
+//     `;
+//     const result = await fetchGraphQL(mutation);
+//     mutate();
+//     return result.addProject;
+//   };
+
+//   const updateProject = async (updatedProject: Project) => {
+//     // Implement the update mutation here
+//     // Then revalidate the cache
+//     mutate();
+//   };
+
+//   return {
+//     projects: data?.projects || [],
+//     isLoading: !error && !data,
+//     isError: error,
+//     addProject,
+//     updateProject,
+//   };
+// };
+
+// // Combined Hook for All Data
+// export const useAllData = () => {
+//   const donors = useDonors();
+//   const donations = useDonations();
+//   const projects = useProjects();
+//   const expenses = useExpenses();
+//   const staffMembers = useStaffMembers();
+
+//   return {
+//     ...donors,
+//     ...donations,
+//     ...projects,
+//     ...expenses,
+//     ...staffMembers,
+//     isLoading: donors.isLoading || donations.isLoading || projects.isLoading || expenses.isLoading || staffMembers.isLoading,
+//     isError: donors.isError || donations.isError || projects.isError || expenses.isError || staffMembers.isError,
+//   };
+// };
+
 import { useState, useEffect } from 'react';
 import { Donor, Donation, Project, Expense, StaffMember } from '../types';
 import { fetchGraphQL, formatDateLocal, getDonationTypeLabel } from '../utils/functions';

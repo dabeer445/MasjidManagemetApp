@@ -12,20 +12,55 @@ export const formatDate = (date: string): string => {
   });
 };
 
-export const fetchGraphQL = async (query: string) => {
-  const Endpoint = API_URL + "/graphql"
+// export const fetchGraphQL = async (query: string) => {
+//   const Endpoint = API_URL + "/graphql"
 
-  const response = await fetch(Endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ query }),
-  });
+//   const response = await fetch(Endpoint, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({ query }),
+//   });
 
-  const result = await response.json();
-  return result.data;
+//   const result = await response.json();
+//   return result.data;
+// };
+export const fetchGraphQL = async (query: string, variables?: Record<string, any>) => {
+  const Endpoint = API_URL + "/graphql";
+
+  try {
+    const response = await fetch(Endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Add any authentication headers here if needed
+        // 'Authorization': `Bearer ${your_auth_token}`
+      },
+      body: JSON.stringify({ 
+        query,
+        variables // Include variables if they are provided
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    if (result.errors) {
+      console.error('GraphQL Errors:', result.errors);
+      throw new Error('GraphQL operation failed');
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error('Error fetching GraphQL:', error);
+    throw error; // Re-throw the error so it can be handled by the caller
+  }
 };
+
 
 export const formatDateLocal = (timestamp: number): string => {
   const date = new Date(timestamp);
