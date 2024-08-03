@@ -4,5 +4,5 @@ export const DonationTypes = [
     { value: "eid", label: "Eid Collection" },
     { value: "sadaqah", label: "Sadaqah" },
     { value: "project", label: "Project Specific" },
-    { value: "zakat", label: "Zakat" },
+    { value: "atyat", label: "Atyat" },
   ]

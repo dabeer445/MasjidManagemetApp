@@ -14,7 +14,7 @@ export default function Dashboard() {
   const totalDonations = useMemo(() => donations.reduce((acc, donation) => acc + donation.amount, 0), [donations]);
   const totalExpenses = useMemo(() => expenses.reduce((acc, expense) => acc + expense.amount, 0), [expenses]);
   const totalBudget = useMemo(() => projects.reduce((acc, project) => acc + project.budget, 0), [projects]);
-  const zakatDonations = useMemo(() => donations.filter(donation => donation.type === 'zakat').reduce((acc, donation) => acc + donation.amount, 0), [donations]);
+  const atyatDonations = useMemo(() => donations.filter(donation => donation.type === 'atyat').reduce((acc, donation) => acc + donation.amount, 0), [donations]);
 
   const donationColumns: Column<Donation>[] = [
     { key: "donor", label: "Donor" },
@@ -55,11 +55,11 @@ export default function Dashboard() {
           </CustomCard>
           <CustomCard>
             <div className="flex justify-between items-center">
-              <p className="text-small font-medium">Zakat Donations</p>
+              <p className="text-small font-medium">Atyat Donations</p>
               <DollarSign className="w-4 h-4 text-default-400" />
             </div>
             <div className="flex flex-col mt-2">
-              <span className="text-2xl font-semibold">{formatCurrency(zakatDonations)}</span>
+              <span className="text-2xl font-semibold">{formatCurrency(atyatDonations)}</span>
             </div>
           </CustomCard>
           <CustomCard>
