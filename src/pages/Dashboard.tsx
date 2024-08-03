@@ -23,7 +23,6 @@ export default function Dashboard() {
     { key: "type", label: "Type" },
     { key: "project", label: "Project" },
   ];
-
   const expenseColumns: Column<Expense>[] = [
     { key: "date", label: "Date"},
     { key: "category", label: "Category" },

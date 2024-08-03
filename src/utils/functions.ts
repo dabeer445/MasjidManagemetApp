@@ -24,7 +24,6 @@ export const fetchGraphQL = async (query: string) => {
   });
 
   const result = await response.json();
-  console.log(result.data)
   return result.data;
 };
 

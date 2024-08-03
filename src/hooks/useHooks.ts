@@ -93,7 +93,7 @@ export const useDonations = () => {
         date: formatDateLocal(parseInt(donation.date)),
         amount: donation.amount,
         type: getDonationTypeLabel(donation.type),
-        project: donation.project,
+        project: donation.project ? donation.project.name : '-',
       }));
       setDonations(transformedDonations);
     };
@@ -134,6 +134,7 @@ export const useDonations = () => {
   
     setDonations(prevDonations => [...prevDonations, addedDonation]);
   };
+
   const updateDonation = async (updatedDonation: Donation) => {
     // Implement the logic to update donation in the database if necessary
     // For now, just updating the local state

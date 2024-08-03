@@ -70,7 +70,6 @@ const Donations: React.FC = () => {
       )
     },
   ];
-console.log(donations)
   const handleUploadSuccess = (url: string) => {
     setNewDonation(prev => ({ ...prev, receiptImage: url }));
     setUploadError(null);
