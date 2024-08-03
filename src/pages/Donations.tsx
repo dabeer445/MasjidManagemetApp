@@ -51,6 +51,7 @@ const Donations: React.FC = () => {
       updateDonation({ ...donationToUpdate, donor: newDonor.name });
     }
   };
+  
   const donationColumns: Column<Donation>[] = [
     { key: "donor", label: "Donor" },
     { key: "date", label: "Date" },
@@ -98,7 +99,7 @@ const Donations: React.FC = () => {
                 const selectedDonor = donors.find(donor => donor.id.toString() === value);
 
                 if (selectedDonor) {
-                  setNewDonation(prev => ({ ...prev, donor: selectedDonor.name }));
+                  setNewDonation(prev => ({ ...prev, donor: selectedDonor.id }));
                 }
               }
             }}

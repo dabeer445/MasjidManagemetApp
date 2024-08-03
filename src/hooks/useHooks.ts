@@ -95,7 +95,7 @@ export const useDonations = () => {
         type: getDonationTypeLabel(donation.type),
         project: donation.project ? donation.project.name : '-',
       }));
-      setDonations(transformedDonations);
+      setDonations(transformedDonations.reverse());
     };
 
     fetchDonations();
@@ -187,7 +187,7 @@ export const useExpenses = () => {
         receiptFile: expense.receiptFile,
       }));
 
-      setExpenses(transformedExpenses);
+      setExpenses(transformedExpenses.reverse());
     };
 
     fetchExpenses();
@@ -343,165 +343,6 @@ export const useProjects = () => {
 
   return { projects, addProject, updateProject };
 };
-// // Donors Hooks
-// export const useDonors = () => {
-//   const [donors, setDonors] = useState<Donor[]>([]);
-
-//   useEffect(() => {
-//     const storedDonors = getLocalStorage<Donor[]>('donors', []);
-//     setDonors(storedDonors);
-//   }, []);
-
-//   // const addDonor = (newDonor: Omit<Donor, 'id'>) => {
-//   //   const updatedDonors: Donor[] = [...donors, { ...newDonor, id: donors.length + 1 }];
-//   //   setDonors(updatedDonors);
-//   //   setLocalStorage('donors', updatedDonors);
-//   // };
-
-//   const addDonor = async (newDonor: Omit<Donor, 'id'>) => {
-//     const query = `
-//       mutation {
-//         addDonor(name: "${newDonor.name}", number: "${newDonor.number}", address: "${newDonor.address}") {
-//           id
-//           name
-//           number
-//           address
-//         }
-//       }
-//     `;
-
-//     const response = await fetch(Endpoint, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({ query }),
-//     });
-
-//     const result = await response.json();
-//     const addedDonor: Donor = result.data.addDonor;
-
-//     const updatedDonors: Donor[] = [...donors, addedDonor];
-//     setDonors(updatedDonors);
-//     // setLocalStorage('donors', updatedDonors);
-//   };
-
-
-//   const updateDonor = (updatedDonor: Donor) => {
-//     const updatedDonors = donors.map(donor => 
-//       donor.id === updatedDonor.id ? updatedDonor : donor
-//     );
-//     setDonors(updatedDonors);
-//     // setLocalStorage('donors', updatedDonors);
-//   };
-
-//   return { donors, addDonor, updateDonor };
-// };
-
-
-// // Donations Hooks
-
-// export const useDonations = () => {
-//   const [donations, setDonations] = useState<Donation[]>([]);
-
-//   useEffect(() => {
-//     const storedDonations = getLocalStorage<Donation[]>('donations', []);
-//     setDonations(storedDonations);
-//   }, []);
-
-//   const addDonation = (newDonation: Omit<Donation, 'id'>) => {
-//     const updatedDonations: Donation[] = [...donations, { ...newDonation, id: donations.length + 1 }];
-//     setDonations(updatedDonations);
-//     setLocalStorage('donations', updatedDonations);
-//   };
-
-//   const updateDonation = (updatedDonation: Donation) => {
-//     const updatedDonations = donations.map(donation => 
-//       donation.id === updatedDonation.id ? updatedDonation : donation
-//     );
-//     setDonations(updatedDonations);
-//     setLocalStorage('donations', updatedDonations);
-//   };
-
-//   return { donations, addDonation, updateDonation };
-// };
-
-// // Projects Hooks
-// export const useProjects = () => {
-//   const [projects, setProjects] = useState<Project[]>([]);
-
-//   useEffect(() => {
-//     const storedProjects = getLocalStorage<Project[]>('projects', []);
-//     setProjects(storedProjects);
-//   }, []);
-
-//   const addProject = (newProject: Omit<Project, 'id'>) => {
-//     const updatedProjects: Project[] = [...projects, { ...newProject, id: projects.length + 1 }];
-//     setProjects(updatedProjects);
-//     setLocalStorage('projects', updatedProjects);
-//   };
-
-//   const updateProject = (updatedProject: Project) => {
-//     const updatedProjects = projects.map(project => 
-//       project.id === updatedProject.id ? updatedProject : project
-//     );
-//     setProjects(updatedProjects);
-//     setLocalStorage('projects', updatedProjects);
-//   };
-
-//   return { projects, addProject, updateProject };
-// };
-// // Expenses Hooks
-// export const useExpenses = () => {
-//   const [expenses, setExpenses] = useState<Expense[]>([]);
-
-//   useEffect(() => {
-//     const storedExpenses = getLocalStorage<Expense[]>('expenses', []);
-//     setExpenses(storedExpenses);
-//   }, []);
-
-//   const addExpense = (newExpense: Omit<Expense, 'id'>) => {
-//     const updatedExpenses: Expense[] = [...expenses, { ...newExpense, id: expenses.length + 1 }];
-//     setExpenses(updatedExpenses);
-//     setLocalStorage('expenses', updatedExpenses);
-//   };
-
-//   const updateExpense = (updatedExpense: Expense) => {
-//     const updatedExpenses = expenses.map(expense => 
-//       expense.id === updatedExpense.id ? updatedExpense : expense
-//     );
-//     setExpenses(updatedExpenses);
-//     setLocalStorage('expenses', updatedExpenses);
-//   };
-
-//   return { expenses, addExpense, updateExpense };
-// };
-
-// // StaffMembers Hooks
-// export const useStaffMembers = () => {
-//   const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
-
-//   useEffect(() => {
-//     const storedStaffMembers = getLocalStorage<StaffMember[]>('staffMembers', []);
-//     setStaffMembers(storedStaffMembers);
-//   }, []);
-
-//   const addStaffMember = (newStaffMember: Omit<StaffMember, 'id'>) => {
-//     const updatedStaffMembers: StaffMember[] = [...staffMembers, { ...newStaffMember, id: staffMembers.length + 1 }];
-//     setStaffMembers(updatedStaffMembers);
-//     setLocalStorage('staffMembers', updatedStaffMembers);
-//   };
-
-//   const updateStaffMember = (updatedStaffMember: StaffMember) => {
-//     const updatedStaffMembers = staffMembers.map(staffMember => 
-//       staffMember.id === updatedStaffMember.id ? updatedStaffMember : staffMember
-//     );
-//     setStaffMembers(updatedStaffMembers);
-//     setLocalStorage('staffMembers', updatedStaffMembers);
-//   };
-
-//   return { staffMembers, addStaffMember, updateStaffMember };
-// };
 
 // Combined Hook for All Data
 export const useAllData = () => {

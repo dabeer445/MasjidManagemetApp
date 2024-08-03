@@ -1,8 +1,6 @@
 import  { useMemo } from "react";
 import { CustomCard } from "../components/CustomCard";
 import { CustomTable, Column } from "../components/CustomTable";
-import { FormInput, FormSelect } from "../components/FormComponents";
-import { SubmitButton } from "../components/ButtonComponents";
 import { DollarSign } from 'lucide-react';
 import { Donation, Project, Expense } from "../types";
 import { useAllData } from "../hooks/useHooks";
@@ -10,18 +8,21 @@ import { formatCurrency } from "../utils/functions";
 
 export default function Dashboard() {
   const { donations, expenses, projects } = useAllData();
-
+  
+console.log(donations)
   const totalDonations = useMemo(() => donations.reduce((acc, donation) => acc + donation.amount, 0), [donations]);
   const totalExpenses = useMemo(() => expenses.reduce((acc, expense) => acc + expense.amount, 0), [expenses]);
-  const totalBudget = useMemo(() => projects.reduce((acc, project) => acc + project.budget, 0), [projects]);
+  // const totalBudget = useMemo(() => projects.reduce((acc, project) => acc + project.budget, 0), [projects]);
   const atyatDonations = useMemo(() => donations.filter(donation => donation.type === 'atyat').reduce((acc, donation) => acc + donation.amount, 0), [donations]);
+  const fridayDonations = useMemo(() => donations.filter(donation => donation.type === "Friday Collection"), [donations]);
+  const totalBudget = useMemo(() => projects.filter(project => project.name !== 'Construction').reduce((acc, project) => acc + project.budget, 0), [projects]);
 
-  const donationColumns: Column<Donation>[] = [
+  const fridayDonationColumns: Column<Donation>[] = [
     { key: "donor", label: "Donor" },
     { key: "date", label: "Date" },
     { key: "amount", label: "Amount", render: (donation) => formatCurrency(donation.amount) },
     { key: "type", label: "Type" },
-    { key: "project", label: "Project" },
+    // { key: "project", label: "Project" },
   ];
   const expenseColumns: Column<Expense>[] = [
     { key: "date", label: "Date"},
@@ -82,8 +83,11 @@ export default function Dashboard() {
           </CustomCard>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <CustomCard title="Recent Donations">
-            <CustomTable data={donations.slice(0, 5)} columns={donationColumns} />
+        <CustomCard title="Recent Donations">
+            <CustomTable data={donations.slice(0, 5)} columns={[...fridayDonationColumns, { key: "project", label: "Project" }]} />
+          </CustomCard>
+          <CustomCard title="Friday Donations">
+            <CustomTable data={fridayDonations.slice(0, 5)} columns={fridayDonationColumns} />
           </CustomCard>
           <CustomCard title="Recent Expenses">
             <CustomTable data={expenses.slice(0, 5)} columns={expenseColumns} />
@@ -91,7 +95,7 @@ export default function Dashboard() {
           <CustomCard title="Recent Projects">
             <CustomTable data={projects.slice(0, 5)} columns={projectColumns} />
           </CustomCard>
-          <CustomCard title="Financial Reports">
+          {/* <CustomCard title="Financial Reports">
             <div className="space-y-4">
               <FormSelect
                 label="Select report type"
@@ -111,7 +115,7 @@ export default function Dashboard() {
               />
               <SubmitButton onClick={() => console.log("Generate Report")}>Generate Report</SubmitButton>
             </div>
-          </CustomCard>
+          </CustomCard> */}
         </div>
       </main>
     </div>
