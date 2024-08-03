@@ -61,6 +61,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadSuccess, onUploadErro
           endpoint: 'https://masjid-management-system-levelfeed.replit.app/upload',
           formData: true,
           fieldName: 'file',
+          allowedMetaFields: ['type'],
         });
 
       uppyRef.current.on('complete', (result: { successful: string | any[]; }) => {
@@ -74,7 +75,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadSuccess, onUploadErro
           }
         }
       });
+      uppyRef.current.on('file-added', (file: any) => {
+        console.log(file)
 
+        uppyRef.current.setFileMeta(file.id, {
+          type: type,
+        });
+      });
       uppyRef.current.on('error', (error: Error) => {
         onUploadError(error);
         setIsModalOpen(false);
@@ -114,7 +121,3 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadSuccess, onUploadErro
 };
 
 export default ImageUpload;
-
-function isMobile(arg0: { tablet: boolean; }): boolean | undefined {
-  throw new Error('Function not implemented.');
-}
