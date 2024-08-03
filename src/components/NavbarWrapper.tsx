@@ -32,18 +32,18 @@ const NavbarWrapper = () => {
         wrapper: "w-full max-w-full px-6",
       }}
     >
+      <NavbarContent className="sm:hidden" justify="start">
+        <NavbarMenuToggle aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
+      </NavbarContent>
+
+      <NavbarContent justify="start">
+        <NavbarBrand>
+          <Moon className="w-6 h-6 mr-2" />
+          <p className="font-bold text-inherit">Muhammadi Masjid Management System</p>
+        </NavbarBrand>
+      </NavbarContent>
+
       <SignedIn>
-        <NavbarContent className="sm:hidden" justify="start">
-          <NavbarMenuToggle aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
-        </NavbarContent>
-
-        <NavbarContent justify="start">
-          <NavbarBrand>
-            <Moon className="w-6 h-6 mr-2" />
-            <p className="font-bold text-inherit">Muhammadi Masjid Management System</p>
-          </NavbarBrand>
-        </NavbarContent>
-
         <NavbarContent className="hidden sm:flex" justify="center">
           {menuItems.map((item) => (
             <NavbarItem key={item.path}>
@@ -76,18 +76,34 @@ const NavbarWrapper = () => {
             <UserButton />
           </NavbarItem>
         </NavbarContent>
+      </SignedIn>
 
-        <NavbarMenu
-          className={`fixed top-[var(--navbar-height)] left-0 bottom-0 w-full max-w-[300px] p-0 transition-transform duration-300 ease-in-out ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'
-            }`}
-        >
+      <SignedOut>
+        <NavbarContent justify="end">
+          <NavbarItem className="hidden sm:flex">
+            <SignInButton mode="modal">
+              <button className="bg-primary text-white px-4 py-2 rounded">
+                Login
+              </button>
+            </SignInButton>
+          </NavbarItem>
+        </NavbarContent>
+      </SignedOut>
+
+      <NavbarMenu
+        className={`fixed top-[var(--navbar-height)] left-0 bottom-0 w-full max-w-[300px] p-0 transition-transform duration-300 ease-in-out ${
+          isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <SignedIn>
           {menuItems.map((item, index) => (
             <React.Fragment key={`${item.path}-${index}`}>
               <NavbarMenuItem>
                 <Link
                   to={item.path}
-                  className={`w-full block py-4 px-6 text-lg ${isActive(item.path) ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-default-100'
-                    }`}
+                  className={`w-full block py-4 px-6 text-lg ${
+                    isActive(item.path) ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-default-100'
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.label}
@@ -98,28 +114,19 @@ const NavbarWrapper = () => {
               )}
             </React.Fragment>
           ))}
-        </NavbarMenu>
-      </SignedIn>
-      <SignedOut>
-        <NavbarContent justify="start">
-          <NavbarBrand>
-            <Moon className="w-6 h-6 mr-2" />
-            <p className="font-bold text-inherit">Muhammadi Masjid Management System</p>
-          </NavbarBrand>
-        </NavbarContent>
-        <NavbarContent justify="end">
-          <NavbarItem className="hidden lg:flex">
+        </SignedIn>
+        <SignedOut>
+          <NavbarMenuItem>
             <SignInButton mode="modal">
-              <button className="bg-primary text-white px-4 py-2 rounded">
+              <button className="w-full block py-4 px-6 text-lg bg-primary text-white rounded">
                 Login
               </button>
             </SignInButton>
-          </NavbarItem>
-        </NavbarContent>
-      </SignedOut>
+          </NavbarMenuItem>
+        </SignedOut>
+      </NavbarMenu>
     </Navbar>
   );
 };
-
 
 export default NavbarWrapper;
