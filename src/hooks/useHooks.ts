@@ -382,10 +382,10 @@ export const useDonations = () => {
         }
       }
     `;
-  
+
     const data = await fetchGraphQL(mutation);
     const addedDonation: Donation = data.addDonation;
-  
+
     setDonations(prevDonations => [...prevDonations, addedDonation]);
   };
 
@@ -417,7 +417,12 @@ export const useExpenses = () => {
             amount
             notes
             utilityType
-            staffMember
+            staffMember {
+              id
+              name
+              number
+              salary
+            }
             project {
               id
               name
@@ -440,7 +445,7 @@ export const useExpenses = () => {
         notes: getDonationTypeLabel(expense.notes),
         receiptFile: expense.receiptFile,
       }));
-
+      console.log("ex",transformedExpenses)
       setExpenses(transformedExpenses.reverse());
     };
 
@@ -457,7 +462,12 @@ export const useExpenses = () => {
           amount
           notes
           utilityType
-          staffMember
+          staffMember {
+            id
+            name
+            number
+            salary
+          }
           project {
             id
             name
@@ -533,7 +543,7 @@ export const useStaffMembers = () => {
     // Implement the logic to update staff member in the database if necessary
     // For now, just updating the local state
     setStaffMembers(prevStaffMembers =>
-      prevStaffMembers.map(staffMember => 
+      prevStaffMembers.map(staffMember =>
         staffMember.id === updatedStaffMember.id ? updatedStaffMember : staffMember
       )
     );

@@ -5,19 +5,21 @@ import { FormInput, FormSelect, FormTextarea } from '../components/FormComponent
 import { SubmitButton, CancelButton } from '../components/ButtonComponents';
 import { Expense } from '../types';
 import { useAllData } from '../hooks/useHooks';
-import { formatCurrency } from '../utils/functions';
+import { formatCurrency, formatDateLocal } from '../utils/functions';
 import { ViewReceiptModal } from '../components/ExpenseModals';
 import ImageUpload from '../components/ImageUpload';
+import { NewStaffMemberModal } from '../components/DonationModals';
 
 
 const expenseCategories = ["Maintenance", "Utilities", "Salaries", "Projects"] as const;
 const utilityTypes = ["K-Electric", "Water", "Gas"] as const;
 
 const Expenses: React.FC = () => {
-  const { expenses, addExpense, projects, staffMembers } = useAllData();
+  const { expenses, addExpense, projects, staffMembers, addStaffMember } = useAllData();
   const [isViewReceiptModalOpen, setIsViewReceiptModalOpen] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [isNewStaffModalOpen, setIsNewStaffModalOpen] = useState(false);
   const [newExpense, setNewExpense] = useState<Omit<Expense, 'id'>>({
     date: '',
     category: 'Maintenance',
@@ -87,8 +89,8 @@ const Expenses: React.FC = () => {
   };
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <CustomCard title="Expense Tracking">
-        <CustomTable data={expenses} columns={expenseColumns} />
+      <CustomCard title="Recent Expenses">
+        <CustomTable data={expenses.slice(0, 6)} columns={expenseColumns} />
       </CustomCard>
       <CustomCard title="Add New Expense">
         <form className="flex flex-col gap-4">
@@ -123,8 +125,24 @@ const Expenses: React.FC = () => {
             <FormSelect
               label="Staff Member"
               value={newExpense.staffMember || ''}
-              onChange={(value: string) => handleStaffMemberChange(value)}
-              options={staffMembers.map(staff => ({ value: staff.id.toString(), label: staff.name }))}
+              // onChange={(value: string) => handleStaffMemberChange(value)}
+              onChange={(value: any) => {
+                if (value === 'new-staff') {
+                  setIsNewStaffModalOpen(true);
+                } else {
+                  // setSelectedDonorId(value);
+                  const selectedStaffMember = staffMembers.find(staff => staff.id.toString() === value);
+
+                  if (selectedStaffMember) {
+                    setNewExpense(prev => ({ ...prev, staffMember: selectedStaffMember.id, amount: selectedStaffMember.salary, notes: `${selectedStaffMember.name}'s Salary` }));
+                  }
+                }
+              }}
+
+              options={[
+                { value: "new-staff", label: "+ Add New Staff" },
+                ...staffMembers.map(staff => ({ value: staff.id.toString(), label: staff.name }))
+              ]}
             />
           )}
           {newExpense.category === 'Projects' && (
@@ -171,6 +189,17 @@ const Expenses: React.FC = () => {
           </div>
         </form>
       </CustomCard>
+
+
+      <CustomCard title="All Expenses" className="md:col-span-2">
+        <CustomTable data={expenses} columns={expenseColumns} />
+      </CustomCard>
+
+      <NewStaffMemberModal
+        isOpen={isNewStaffModalOpen}
+        onClose={() => setIsNewStaffModalOpen(false)}
+        onAddStaff={addStaffMember }
+      />
 
       <ViewReceiptModal
         isOpen={isViewReceiptModalOpen}

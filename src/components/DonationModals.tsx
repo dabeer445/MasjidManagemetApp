@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CustomModal } from '../components/CustomModal';
 import { FormInput, FormSelect } from '../components/FormComponents';
 import { SubmitButton, CancelButton } from '../components/ButtonComponents';
-import { Donor, Donation, Project } from '../types';
+import { Donor, Donation, Project, StaffMember } from '../types';
 
 interface NewDonorModalProps {
     isOpen: boolean;
@@ -41,6 +41,48 @@ export const NewDonorModal: React.FC<NewDonorModalProps> = ({ isOpen, onClose, o
                 label="Address"
                 value={newDonor.address}
                 onChange={(value: any) => setNewDonor({ ...newDonor, address: value })}
+            />
+
+        </CustomModal>
+    );
+};
+
+interface NewStaffMemberModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onAddStaff: (staff: Omit<StaffMember, 'id'>) => void;
+}
+export const NewStaffMemberModal: React.FC<NewStaffMemberModalProps> = ({ isOpen, onClose, onAddStaff }) => {
+    const [newStaff, setNewStaff] = useState<Omit<StaffMember, 'id'>>({ name: '', number: '', salary: 0 });
+
+    return (
+        <CustomModal 
+            isOpen={isOpen}
+            onClose={onClose}
+            title="Add New Staff Member"
+            footer={
+                <div className="flex justify-end mt-4">
+                    <CancelButton onClick={onClose}>Cancel</CancelButton>
+                    <SubmitButton onClick={() => {
+                        onAddStaff(newStaff);
+                        onClose();
+                    }}>Add Staff</SubmitButton>
+                </div>  
+            }>
+            <FormInput
+                label="Name"
+                value={newStaff.name}
+                onChange={(value: any) => setNewStaff({ ...newStaff, name: value })}
+            />
+            <FormInput
+                label="Phone Number"
+                value={newStaff.number}
+                onChange={(value: any) => setNewStaff({ ...newStaff, number: value })}
+            />
+            <FormInput
+                label="Salary"
+                value={newStaff.salary}
+                onChange={(value: any) => setNewStaff({ ...newStaff, salary: value })}
             />
 
         </CustomModal>

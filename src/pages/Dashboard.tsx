@@ -55,11 +55,11 @@ export default function Dashboard() {
           </CustomCard>
           <CustomCard>
             <div className="flex justify-between items-center">
-              <p className="text-small font-medium">Atyat Donations</p>
+              <p className="text-small font-medium">Balance</p>
               <DollarSign className="w-4 h-4 text-default-400" />
             </div>
             <div className="flex flex-col mt-2">
-              <span className="text-2xl font-semibold">{formatCurrency(atyatDonations)}</span>
+              <span className="text-2xl font-semibold">{formatCurrency(totalDonations-totalExpenses)}</span>
             </div>
           </CustomCard>
           <CustomCard>
