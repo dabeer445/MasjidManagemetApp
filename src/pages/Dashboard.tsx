@@ -1,10 +1,14 @@
-import  { useMemo } from "react";
+import { useMemo } from "react";
 import { CustomCard } from "../components/CustomCard";
 import { CustomTable, Column } from "../components/CustomTable";
 import { DollarSign } from 'lucide-react';
 import { Donation, Project, Expense } from "../types";
 import { useAllData } from "../hooks/useHooks";
 import { formatCurrency } from "../utils/functions";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement } from 'chart.js';
+import { Pie, Line } from 'react-chartjs-2';
+
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement);
 
 export default function Dashboard() {
   const { donations, expenses, projects } = useAllData();
@@ -39,6 +43,38 @@ export default function Dashboard() {
     { key: "budget", label: "Budget", render: (project) => formatCurrency(project.budget) },
     { key: "status", label: "Status" },
   ];
+
+  const prepareDonationDistributionData = () => {
+    const donationTypes = donations.reduce((acc, donation) => {
+      acc[donation.type] = (acc[donation.type] || 0) + donation.amount;
+      return acc;
+    }, {} as Record<string, number>);
+
+    return {
+      labels: Object.keys(donationTypes),
+      datasets: [{
+        data: Object.values(donationTypes),
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+      }]
+    };
+  };
+
+  const prepareDonationTrendData = () => {
+    const sortedDonations = [...donations].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const dates = sortedDonations.map(d => d.date);
+    const amounts = sortedDonations.map(d => d.amount);
+
+    return {
+      labels: dates,
+      datasets: [{
+        label: 'Donation Amount',
+        data: amounts,
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+      }]
+    };
+  };
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-background">
@@ -82,7 +118,7 @@ export default function Dashboard() {
           </CustomCard>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <CustomCard title="Recent Donations">
+          <CustomCard title="Recent Donations">
             <CustomTable data={donations.slice(0, 5)} columns={[...fridayDonationColumns, { key: "project", label: "Project" }]} />
           </CustomCard>
           <CustomCard title="Friday Donations">
@@ -94,27 +130,12 @@ export default function Dashboard() {
           <CustomCard title="Recent Projects">
             <CustomTable data={projects.slice(0, 5)} columns={projectColumns} />
           </CustomCard>
-          {/* <CustomCard title="Financial Reports">
-            <div className="space-y-4">
-              <FormSelect
-                label="Select report type"
-                value=""
-                onChange={() => { }}
-                options={[
-                  { value: "monthly", label: "Monthly" },
-                  { value: "annual", label: "Annual" },
-                  { value: "project", label: "Project-specific" },
-                ]}
-              />
-              <FormInput
-                label="Select period"
-                value=""
-                onChange={() => { }}
-                type="date"
-              />
-              <SubmitButton onClick={() => console.log("Generate Report")}>Generate Report</SubmitButton>
-            </div>
-          </CustomCard> */}
+          <CustomCard title="Donation Distribution">
+            <Pie data={prepareDonationDistributionData()} />
+          </CustomCard>
+          <CustomCard title="Donation Trends">
+            <Line data={prepareDonationTrendData()} />
+          </CustomCard>
         </div>
       </main>
     </div>
