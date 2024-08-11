@@ -56,7 +56,7 @@ export function CustomTable<T extends Record<string, any>>({ data, columns, clas
       <Input
         placeholder="Search..."
         value={searchTerm}
-        onChange={(e) => handleSearch(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e.target.value)}
         className="mb-4"
       />
       <Table
@@ -68,7 +68,7 @@ export function CustomTable<T extends Record<string, any>>({ data, columns, clas
         <TableHeader>
           {allColumns.map((column) => (
             <TableColumn
-              key={column.key.toString()}
+              key={column.key as string}
               allowsSorting={column.sortable}
             >
               {column.label}
@@ -79,8 +79,10 @@ export function CustomTable<T extends Record<string, any>>({ data, columns, clas
           {sortedData.map((item, index) => (
             <TableRow key={index}>
               {allColumns.map((column) => (
-                <TableCell key={column.key.toString()}>
-                  {column.render ? column.render(item, index) : item[column.key]}
+                <TableCell key={column.key as string}>
+                  {column.render && typeof column.render === 'function'
+                    ? column.render(item, index)
+                    : item[column.key]}
                 </TableCell>
               ))}
             </TableRow>
