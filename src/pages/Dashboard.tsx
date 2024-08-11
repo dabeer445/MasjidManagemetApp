@@ -45,35 +45,50 @@ export default function Dashboard() {
   ];
 
   const prepareDonationDistributionData = () => {
-    const donationTypes = donations.reduce((acc, donation) => {
-      acc[donation.type] = (acc[donation.type] || 0) + donation.amount;
-      return acc;
-    }, {} as Record<string, number>);
+    try {
+      const donationTypes = donations.reduce((acc, donation) => {
+        acc[donation.type] = (acc[donation.type] || 0) + donation.amount;
+        return acc;
+      }, {} as Record<string, number>);
 
-    return {
-      labels: Object.keys(donationTypes),
-      datasets: [{
-        data: Object.values(donationTypes),
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-      }]
-    };
+      return {
+        labels: Object.keys(donationTypes),
+        datasets: [{
+          data: Object.values(donationTypes),
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+        }]
+      };
+    } catch (error) {
+      console.error('Error preparing donation distribution data:', error);
+      return { labels: [], datasets: [{ data: [], backgroundColor: [] }] };
+    }
   };
 
   const prepareDonationTrendData = () => {
-    const sortedDonations = [...donations].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    const dates = sortedDonations.map(d => d.date);
-    const amounts = sortedDonations.map(d => d.amount);
+    try {
+      const sortedDonations = [...donations].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      const dates = sortedDonations.map(d => d.date);
+      const amounts = sortedDonations.map(d => d.amount);
 
-    return {
-      labels: dates,
-      datasets: [{
-        label: 'Donation Amount',
-        data: amounts,
-        fill: false,
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1
-      }]
-    };
+      return {
+        labels: dates,
+        datasets: [{
+          label: 'Donation Amount',
+          data: amounts,
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1
+        }]
+      };
+    } catch (error) {
+      console.error('Error preparing donation trend data:', error);
+      return { labels: [], datasets: [{ label: '', data: [], fill: false, borderColor: '', tension: 0 }] };
+    }
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
   };
 
   return (
@@ -131,10 +146,14 @@ export default function Dashboard() {
             <CustomTable data={projects.slice(0, 5)} columns={projectColumns} />
           </CustomCard>
           <CustomCard title="Donation Distribution">
-            <Pie data={prepareDonationDistributionData()} />
+            <div style={{ height: '300px' }}>
+              <Pie data={prepareDonationDistributionData()} options={chartOptions} />
+            </div>
           </CustomCard>
           <CustomCard title="Donation Trends">
-            <Line data={prepareDonationTrendData()} />
+            <div style={{ height: '300px' }}>
+              <Line data={prepareDonationTrendData()} options={chartOptions} />
+            </div>
           </CustomCard>
         </div>
       </main>
