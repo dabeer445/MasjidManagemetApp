@@ -30,11 +30,16 @@ export function CustomTable<T extends Record<string, any>>({ data, columns, clas
 
   const sortedData = useMemo(() => {
     return [...filteredData].sort((a, b) => {
-      const first = a[sortDescriptor.column as keyof T];
-      const second = b[sortDescriptor.column as keyof T];
+      const column = sortDescriptor.column as keyof T | 'no';
+      if (column === 'no') {
+        const indexA = filteredData.indexOf(a);
+        const indexB = filteredData.indexOf(b);
+        return sortDescriptor.direction === 'ascending' ? indexA - indexB : indexB - indexA;
+      }
+      const first = a[column];
+      const second = b[column];
       const cmp = first < second ? -1 : first > second ? 1 : 0;
-
-      return sortDescriptor.direction === 'descending' ? -cmp : cmp;
+      return sortDescriptor.direction === 'ascending' ? cmp : -cmp;
     });
   }, [filteredData, sortDescriptor]);
 
@@ -69,7 +74,8 @@ export function CustomTable<T extends Record<string, any>>({ data, columns, clas
           {allColumns.map((column) => (
             <TableColumn
               key={column.key as string}
-              allowsSorting={column.sortable}
+              allowsSorting
+              sortDirection={sortDescriptor.column === column.key ? sortDescriptor.direction : undefined}
             >
               {column.label}
             </TableColumn>
