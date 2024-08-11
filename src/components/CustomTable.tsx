@@ -31,16 +31,14 @@ export function CustomTable<T extends Record<string, any>>({ data, columns, clas
   const sortedData = useMemo(() => {
     return [...filteredData].sort((a, b) => {
       const column = sortDescriptor.column as keyof T | 'no';
-      if (column === 'no') {
-        const indexA = filteredData.indexOf(a);
-        const indexB = filteredData.indexOf(b);
-        return sortDescriptor.direction === 'ascending' ? indexA - indexB : indexB - indexA;
+      if (column !== 'no') {
+        const first = a[column];
+        const second = b[column];
+        const cmp = first < second ? -1 : first > second ? 1 : 0;
+        return sortDescriptor.direction === 'ascending' ? cmp : -cmp;
       }
-      const first = a[column];
-      const second = b[column];
-      const cmp = first < second ? -1 : first > second ? 1 : 0;
-      return sortDescriptor.direction === 'ascending' ? cmp : -cmp;
-    });
+      return 0;
+    }).map((item, index) => ({ ...item, no: index + 1 }));
   }, [filteredData, sortDescriptor]);
 
   const handleSearch = (value: string) => {
@@ -86,7 +84,9 @@ export function CustomTable<T extends Record<string, any>>({ data, columns, clas
             <TableRow key={index}>
               {allColumns.map((column) => (
                 <TableCell key={column.key as string}>
-                  {column.render && typeof column.render === 'function'
+                  {column.key === 'no'
+                    ? item.no
+                    : column.render && typeof column.render === 'function'
                     ? column.render(item, index)
                     : item[column.key] as React.ReactNode}
                 </TableCell>
