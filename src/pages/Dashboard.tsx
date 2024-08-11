@@ -10,6 +10,18 @@ import { Pie, Line } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement);
 
+const StatCard = ({ title, value, icon: Icon }) => (
+  <CustomCard>
+    <div className="flex justify-between items-center">
+      <p className="text-small font-medium">{title}</p>
+      <Icon className="w-4 h-4 text-default-400" />
+    </div>
+    <div className="flex flex-col mt-2">
+      <span className="text-2xl font-semibold">{value}</span>
+    </div>
+  </CustomCard>
+);
+
 export default function Dashboard() {
   const { donations, expenses, projects } = useAllData();
   
@@ -94,45 +106,13 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col w-full min-h-screen bg-background">
       <main className="flex min-h-[calc(100vh_-_64px)] flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <CustomCard>
-            <div className="flex justify-between items-center">
-              <p className="text-small font-medium">Total Donations</p>
-              <DollarSign className="w-4 h-4 text-default-400" />
-            </div>
-            <div className="flex flex-col mt-2">
-              <span className="text-2xl font-semibold">{formatCurrency(totalDonations)}</span>
-            </div>
-          </CustomCard>
-          <CustomCard>
-            <div className="flex justify-between items-center">
-              <p className="text-small font-medium">Balance</p>
-              <DollarSign className="w-4 h-4 text-default-400" />
-            </div>
-            <div className="flex flex-col mt-2">
-              <span className="text-2xl font-semibold">{formatCurrency(totalDonations-totalExpenses)}</span>
-            </div>
-          </CustomCard>
-          <CustomCard>
-            <div className="flex justify-between items-center">
-              <p className="text-small font-medium">Expenses</p>
-              <DollarSign className="w-4 h-4 text-default-400" />
-            </div>
-            <div className="flex flex-col mt-2">
-              <span className="text-2xl font-semibold">{formatCurrency(totalExpenses)}</span>
-            </div>
-          </CustomCard>
-          <CustomCard>
-            <div className="flex justify-between items-center">
-              <p className="text-small font-medium">Total Projects</p>
-              <DollarSign className="w-4 h-4 text-default-400" />
-            </div>
-            <div className="flex flex-col mt-2">
-              <span className="text-2xl font-semibold">{formatCurrency(totalBudget)}</span>
-            </div>
-          </CustomCard>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <StatCard title="Total Donations" value={formatCurrency(totalDonations)} icon={DollarSign} />
+          <StatCard title="Balance" value={formatCurrency(totalDonations-totalExpenses)} icon={DollarSign} />
+          <StatCard title="Expenses" value={formatCurrency(totalExpenses)} icon={DollarSign} />
+          <StatCard title="Total Projects" value={formatCurrency(totalBudget)} icon={DollarSign} />
+        </section>
+        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <CustomCard title="Recent Donations">
             <CustomTable data={donations.slice(0, 5)} columns={[...fridayDonationColumns, { key: "project", label: "Project" }]} />
           </CustomCard>
@@ -155,7 +135,7 @@ export default function Dashboard() {
               <Line data={prepareDonationTrendData()} options={chartOptions} />
             </div>
           </CustomCard>
-        </div>
+        </section>
       </main>
     </div>
   );
