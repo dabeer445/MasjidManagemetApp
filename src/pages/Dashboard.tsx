@@ -12,7 +12,7 @@ export default function Dashboard() {
   const totalDonations = useMemo(() => donations.reduce((acc, donation) => acc + donation.amount, 0), [donations]);
   const totalExpenses = useMemo(() => expenses.reduce((acc, expense) => acc + expense.amount, 0), [expenses]);
   // const totalBudget = useMemo(() => projects.reduce((acc, project) => acc + project.budget, 0), [projects]);
-  const atyatDonations = useMemo(() => donations.filter(donation => donation.type === 'atyat').reduce((acc, donation) => acc + donation.amount, 0), [donations]);
+  // const atyatDonations = useMemo(() => donations.filter(donation => donation.type === 'atyat').reduce((acc, donation) => acc + donation.amount, 0), [donations]);
   const fridayDonations = useMemo(() => donations.filter(donation => donation.type === "Friday Collection"), [donations]);
   const totalBudget = useMemo(() => projects.filter(project => project.name !== 'Construction').reduce((acc, project) => acc + project.budget, 0), [projects]);
 

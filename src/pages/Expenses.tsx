@@ -5,7 +5,7 @@ import { FormInput, FormSelect, FormTextarea } from '../components/FormComponent
 import { SubmitButton, CancelButton } from '../components/ButtonComponents';
 import { Expense } from '../types';
 import { useAllData } from '../hooks/useHooks';
-import { formatCurrency, formatDateLocal } from '../utils/functions';
+import { formatCurrency } from '../utils/functions';
 import { ViewReceiptModal } from '../components/ExpenseModals';
 import ImageUpload from '../components/ImageUpload';
 import { NewStaffMemberModal } from '../components/DonationModals';
@@ -49,16 +49,16 @@ const Expenses: React.FC = () => {
     });
   };
 
-  const handleStaffMemberChange = (selectedStaffMemberId: string) => {
-    const selectedStaff = staffMembers.find(staff => staff.id.toString() === selectedStaffMemberId);
-    if (selectedStaff) {
-      setNewExpense(prev => ({
-        ...prev,
-        staffMember: selectedStaff.name,
-        amount: selectedStaff.salary
-      }));
-    }
-  };
+  // const handleStaffMemberChange = (selectedStaffMemberId: string) => {
+  //   const selectedStaff = staffMembers.find(staff => staff.id.toString() === selectedStaffMemberId);
+  //   if (selectedStaff) {
+  //     setNewExpense(prev => ({
+  //       ...prev,
+  //       staffMember: selectedStaff.name,
+  //       amount: selectedStaff.salary
+  //     }));
+  //   }
+  // };
 
   const expenseColumns: Column<Expense>[] = [
     { key: "date", label: "Date" },
@@ -198,7 +198,7 @@ const Expenses: React.FC = () => {
       <NewStaffMemberModal
         isOpen={isNewStaffModalOpen}
         onClose={() => setIsNewStaffModalOpen(false)}
-        onAddStaff={addStaffMember }
+        onAddStaff={addStaffMember}
       />
 
       <ViewReceiptModal
