@@ -10,7 +10,16 @@ import { Pie, Line } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement);
 
-const StatCard = ({ title, value, icon: Icon }) => (
+import { FC } from 'react';
+import { IconProps } from 'lucide-react';
+
+interface StatCardProps {
+  title: string;
+  value: string;
+  icon: FC<IconProps>;
+}
+
+const StatCard: FC<StatCardProps> = ({ title, value, icon: Icon }) => (
   <CustomCard>
     <div className="flex justify-between items-center">
       <p className="text-small font-medium">{title}</p>
