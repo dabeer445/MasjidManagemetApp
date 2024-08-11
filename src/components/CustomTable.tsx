@@ -82,7 +82,7 @@ export function CustomTable<T extends Record<string, any>>({ data, columns, clas
                 <TableCell key={column.key as string}>
                   {column.render && typeof column.render === 'function'
                     ? column.render(item, index)
-                    : item[column.key]}
+                    : item[column.key] as React.ReactNode}
                 </TableCell>
               ))}
             </TableRow>
