@@ -274,7 +274,7 @@ export const useDonors = () => {
       `;
 
       const data = await fetchGraphQL(query);
-      setDonors(data.donors);
+      setDonors(data.donors.sort((a:Donor, b:Donor) => a.name.localeCompare(b.name)));
     };
 
     fetchDonors();
@@ -445,7 +445,6 @@ export const useExpenses = () => {
         notes: getDonationTypeLabel(expense.notes),
         receiptFile: expense.receiptFile,
       }));
-      console.log("ex",transformedExpenses)
       setExpenses(transformedExpenses.reverse());
     };
 

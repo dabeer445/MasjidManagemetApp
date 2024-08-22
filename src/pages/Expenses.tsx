@@ -150,7 +150,7 @@ const Expenses: React.FC = () => {
               label="Project"
               value={newExpense.project || ''}
               onChange={(value: any) => setNewExpense(prev => ({ ...prev, project: value }))}
-              options={projects.map(project => ({ value: project.name, label: project.name }))}
+              options={projects.map(project => ({ value: project.id, label: project.name }))}
             />
           )}
           <FormInput

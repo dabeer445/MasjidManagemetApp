@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client';
 import { NextUIProvider } from '@nextui-org/react';
 import App from './App';
 import './index.css';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 const rootElement = document.getElementById('root');
 
@@ -20,3 +21,6 @@ if (rootElement) {
 } else {
   console.error('Failed to find the root element.');
 }
+
+
+serviceWorkerRegistration.register();

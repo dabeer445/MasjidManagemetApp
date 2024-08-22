@@ -1,12 +1,19 @@
 import React, { useState, useMemo } from 'react';
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Input, SortDescriptor } from '@nextui-org/react';
 
-export interface Column<T> {
-  key: keyof T | 'actions' | 'receipt' | 'no';
+// export interface Column<T> {
+//   key: keyof T | 'actions' | 'receipt' | 'no';
+//   label: string;
+//   render?: (item: T, index: number) => React.ReactNode;
+//   sortable?: boolean;
+// }
+
+export type Column<T> = {
+  key: keyof T | string;
   label: string;
   render?: (item: T, index: number) => React.ReactNode;
   sortable?: boolean;
-}
+};
 
 interface CustomTableProps<T> {
   data: T[];
@@ -73,7 +80,7 @@ export function CustomTable<T extends Record<string, any>>({ data, columns, clas
             <TableColumn
               key={column.key as string}
               allowsSorting
-              sortDirection={sortDescriptor.column === column.key ? sortDescriptor.direction : undefined}
+              // sortDirection={sortDescriptor.column === column.key ? sortDescriptor.direction : undefined}
             >
               {column.label}
             </TableColumn>

@@ -12,20 +12,31 @@ export const formatDate = (date: string): string => {
   });
 };
 
-// export const fetchGraphQL = async (query: string) => {
-//   const Endpoint = API_URL + "/graphql"
+export const formatReportDate = (dateString: string): string => {
+  const [day, month, year] = dateString.split('/');
+  const date = new Date(parseInt('20' + year), parseInt(month) - 1, parseInt(day));
 
-//   const response = await fetch(Endpoint, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({ query }),
-//   });
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
 
-//   const result = await response.json();
-//   return result.data;
-// };
+  const getDaySuffix = (day: number): string => {
+    if (day > 3 && day < 21) return 'th';
+    switch (day % 10) {
+      case 1:  return "st";
+      case 2:  return "nd";
+      case 3:  return "rd";
+      default: return "th";
+    }
+  };
+
+  const formattedDay = date.getDate();
+  const formattedMonth = monthNames[date.getMonth()];
+  const formattedYear = date.getFullYear();
+
+  return `${formattedDay}${getDaySuffix(formattedDay)} ${formattedMonth}, ${formattedYear}`;
+};
 export const fetchGraphQL = async (query: string, variables?: Record<string, any>) => {
   const Endpoint = API_URL + "/graphql";
 

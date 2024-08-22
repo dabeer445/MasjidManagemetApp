@@ -10,3 +10,4 @@ export const DonationTypes = [
 export const GA_TRACKING_ID = 'G-GPRSPJX9K7'
 
 export const API_URL = 'https://masjid-management-system-levelfeed.replit.app'
+// export const API_URL = 'https://81c1f90b-be7a-4c51-b1cd-7c0511a5c82f-00-1r83knftukhv5.pike.replit.dev'
