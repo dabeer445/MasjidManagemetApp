@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Card, CardHeader, CardBody, CardFooter, Divider, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Input, Button, Select, SelectItem } from '@nextui-org/react';
 import { useAllData } from '../hooks/useHooks';
 import { formatCurrency, formatDate, formatReportDate } from '../utils/functions';
